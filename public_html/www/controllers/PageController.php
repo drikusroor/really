@@ -13,7 +13,12 @@ class PageController extends BaseController {
 
         // if file exists, return as is
         if (file_exists($file)) {
-            return file_get_contents($file);
+                
+                $parsedown = new Parsedown();
+                $content = file_get_contents($file);
+                $content = $parsedown->text($content);
+
+                return $content;
         }
 
         // if file does not exist, return 404
