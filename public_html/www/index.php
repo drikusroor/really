@@ -11,10 +11,8 @@ $router = new Router(
     [
         new Route('/', 'HomeController@index'),
         new Route('/about', 'HomeController@about'),
+        new Route('/:slug', 'PageController@index'),
     ]
 );
 
 $router->execute($_SERVER['REQUEST_URI']);
-
-// echo a basic html page
-echo '<html><head><title>PHP Test</title></head><body><h1>PHP Test</h1></body></html>';
