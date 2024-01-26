@@ -2,7 +2,9 @@ version: '3'
 services:
   php:
     container_name: really
-    image: php:8.3-apache
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - ./www:/var/www/html
     ports:
