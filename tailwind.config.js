@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [],
-  purge: ['./public/**/*.html', './src/**/*.php'], 
+  purge: [
+    './content/**/*.(md|html)',
+    './src/**/*.(php|twig|html|js)',
+  ],
   theme: {
     extend: {},
   },
