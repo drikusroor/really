@@ -43,4 +43,8 @@ class Container {
         }
         return $results;
     }
+
+    public function has($abstract) {
+        return isset($this->bindings[$abstract]);
+    }
 }

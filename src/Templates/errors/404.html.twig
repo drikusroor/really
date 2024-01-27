@@ -1,0 +1,10 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block content %}
+    <article class="prose">
+        Page not found.
+        {% if message is defined %}
+            <p>{{ message }}</p>
+        {% endif %}
+    </article>
+{% endblock %}
