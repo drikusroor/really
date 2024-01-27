@@ -14,7 +14,7 @@ class BaseController {
 
     protected function initializeTwig() {
         // Define the path to your Twig templates
-        $loader = new FilesystemLoader(__DIR__ . '/../Templates');
+        $loader = new FilesystemLoader(__DIR__ . '/../templates');
 
         // Create the Twig environment with optional settings
         $this->twig = new Environment($loader, [

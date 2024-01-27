@@ -19,7 +19,7 @@ class PageController extends BaseController {
             $safeHtml = $parsedown->text($content);
 
             // Render the view using Twig
-            echo $this->twig->render('Pages/page.html.twig', [
+            echo $this->twig->render('pages/page.html.twig', [
                 'title' => 'Your Page Title',
                 'content' => $safeHtml,
             ]);
