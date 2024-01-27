@@ -2,8 +2,6 @@
 namespace Ainab\Really\Controller;
 
 use Parsedown;
-use HTMLPurifier;
-use HTMLPurifier_Config;
 
 class PageController extends BaseController {
 
@@ -12,30 +10,25 @@ class PageController extends BaseController {
     }
 
     public function index($slug) {
-
         $cwd = getcwd();
         $file = $cwd . '/../content/pages/' . $slug . '.md';
 
-        // if file exists, return as is
         if (file_exists($file)) {
-                
-                // Parse Markdown
-                $parsedown = new Parsedown();
-                $content = file_get_contents($file);
-                $content = $parsedown->text($content);
+            $parsedown = new Parsedown();
+            $content = file_get_contents($file);
+            $safeHtml = $parsedown->text($content);
 
-                // Sanitize HTML
-                $config = HTMLPurifier_Config::createDefault();
-                $purifier = new HTMLPurifier($config);
-                $safeHtml = $purifier->purify($content);
+            // Render the view using Twig
+            echo $this->twig->render('Pages/page.html.twig', [
+                'title' => 'Your Page Title',
+                'content' => $safeHtml,
+            ]);
 
-                echo $safeHtml;
+            return;
         }
 
-        // if file does not exist, return 404
-        echo '404';
-
-        return '404';
+        // Handle 404
+        echo $this->twig->render('errors/404.html.twig');
     }
 
 }
