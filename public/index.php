@@ -9,7 +9,7 @@ $container = new DI\Container();
 $container->bind('BaseController', 'Ainab\Really\Controller\BaseController');
 $container->bind('HomeController', 'Ainab\Really\Controller\HomeController');
 $container->bind('PageController', 'Ainab\Really\Controller\PageController');
-$container->bind('AdminHomeController', 'Ainab\Really\Controller\AdminHomeController');
+$container->bind('AdminHomeController', 'Ainab\Really\Controller\Admin\AdminHomeController');
 $container->bind('ErrorController', 'Ainab\Really\Controller\ErrorController');
 
 // These lines are for DEVELOPMENT only.  You should never display errors
@@ -26,11 +26,6 @@ $router = new Router(
 
 $router->group(['prefix' => 'admin'], function ($router) {
     $router->addRoute(new Route('/', 'AdminHomeController@index'));
-    $router->addRoute(new Route('/pages', 'AdminPageController@index'));
-    $router->addRoute(new Route('/pages/:id', 'AdminPageController@edit'));
-    $router->addRoute(new Route('/pages/:id/delete', 'AdminPageController@delete'));
-    $router->addRoute(new Route('/pages/create', 'AdminPageController@create'));
-    $router->addRoute(new Route('/pages/store', 'AdminPageController@store'));
 });
 
 $router->addRoute(new Route('/:slug', 'PageController@index'));

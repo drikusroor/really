@@ -7,8 +7,8 @@ class ErrorController extends BaseController {
         parent::__construct();
     }
 
-    public function notFound() {
+    public function notFound($message = null) {
         // Handle 404
-        echo $this->twig->render('errors/404.html.twig');
+        echo $this->twig->render('errors/404.html.twig', ['message' => $message]);
     }
 }

@@ -53,7 +53,6 @@ class Router
     public function execute($url, $container)
     {
         foreach ($this->routes as $route) {
-
             if ($route->matches($url)) {
                 return $route->execute($container);
             }

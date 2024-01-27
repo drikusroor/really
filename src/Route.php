@@ -59,7 +59,7 @@ class Route
                     return call_user_func_array([$controller, $method], $this->matches);
                 }
             } catch (\Exception $e) {
-                return $this->handleNotFound($container);
+                return $this->handleNotFound($container, $e->getMessage());
             }
         }
 
@@ -78,8 +78,8 @@ class Route
         $this->path = trim($newPath, '/');
     }
 
-    protected function handleNotFound($container)
+    protected function handleNotFound($container, $message = null)
     {
-        return $container->make('ErrorController')->notFound();
+        return $container->make('ErrorController')->notFound($message);
     }
 }
