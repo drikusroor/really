@@ -1,4 +1,5 @@
 <?php
+namespace Ainab\Really;
 
 class Router {
 
@@ -34,10 +35,10 @@ class Router {
      *
      * @param string $url The url to be matched.
      */
-    public function execute($url) {
+    public function execute($url, $container) {
         foreach ($this->routes as $route) {
             if ($route->matches($url)) {
-                return $route->execute();
+                return $route->execute($container);
             }
         }
     }

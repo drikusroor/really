@@ -1,4 +1,5 @@
 <?php
+namespace Ainab\Really\Controller;
 
 class BaseController {
 

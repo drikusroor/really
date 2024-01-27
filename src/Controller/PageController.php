@@ -1,4 +1,7 @@
 <?php
+namespace Ainab\Really\Controller;
+
+use Parsedown;
 
 class PageController extends BaseController {
 
@@ -18,10 +21,14 @@ class PageController extends BaseController {
                 $content = file_get_contents($file);
                 $content = $parsedown->text($content);
 
+                echo $content;
+
                 return $content;
         }
 
         // if file does not exist, return 404
+        echo '404';
+
         return '404';
     }
 

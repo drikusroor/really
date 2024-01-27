@@ -1,11 +1,14 @@
-version: '3'
+version: '3.8'
+
 services:
-  php:
-    container_name: really
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./public_html/www:/var/www/html
+  web:
+    build: .
     ports:
-      - 3000:80
+      - "3000:80"  # Map port 80 on the host to port 80 in the container
+    volumes:
+      - .:/var/www/html  # Mount the project directory to the working directory in the container
+      - ./public/media:/var/www/html/public/media  # Persistent volume for uploaded files
+      - ./content:/var/www/html/content  # Persistent volume for content (markdown files)
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    restart: always
