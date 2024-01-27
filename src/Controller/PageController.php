@@ -2,6 +2,8 @@
 namespace Ainab\Really\Controller;
 
 use Parsedown;
+use HTMLPurifier;
+use HTMLPurifier_Config;
 
 class PageController extends BaseController {
 
@@ -12,18 +14,22 @@ class PageController extends BaseController {
     public function index($slug) {
 
         $cwd = getcwd();
-        $file = $cwd . '/pages/' . $slug . '.md';
+        $file = $cwd . '/../content/pages/' . $slug . '.md';
 
         // if file exists, return as is
         if (file_exists($file)) {
                 
+                // Parse Markdown
                 $parsedown = new Parsedown();
                 $content = file_get_contents($file);
                 $content = $parsedown->text($content);
 
-                echo $content;
+                // Sanitize HTML
+                $config = HTMLPurifier_Config::createDefault();
+                $purifier = new HTMLPurifier($config);
+                $safeHtml = $purifier->purify($content);
 
-                return $content;
+                echo $safeHtml;
         }
 
         // if file does not exist, return 404

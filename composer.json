@@ -2,7 +2,8 @@
     "name": "ainab/really",
     "type": "project",
     "require": {
-        "erusev/parsedown-extra": "^0.8.1"
+        "erusev/parsedown-extra": "^0.8.1",
+        "ezyang/htmlpurifier": "^4.17"
     },
     "license": "MIT",
     "autoload": {
