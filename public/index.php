@@ -6,6 +6,7 @@ use Ainab\Really\Router;
 use Ainab\Really\Route;
 
 $container = new DI\Container();
+$container->bind('ManagePageService', 'Ainab\Really\Service\ManagePageService');
 $container->bind('BaseController', 'Ainab\Really\Controller\BaseController');
 $container->bind('HomeController', 'Ainab\Really\Controller\HomeController');
 $container->bind('PageController', 'Ainab\Really\Controller\PageController');
@@ -26,6 +27,7 @@ $router = new Router(
 
 $router->group(['prefix' => 'admin'], function ($router) {
     $router->addRoute(new Route('/', 'AdminHomeController@index'));
+    $router->addRoute(new Route('/post', 'AdminHomeController@post'));
 });
 
 $router->addRoute(new Route('/:slug', 'PageController@index'));
