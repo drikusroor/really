@@ -17,8 +17,7 @@ class ManagePageService {
         if ($frontmatter->getSlug()) {
             $slug = $frontmatter->getSlug();
         } else {
-            $date = \date('Y-m-d');
-            $slug = $date . '-' . strtolower($frontmatter->getTitle());
+            $slug = strtolower($frontmatter->getTitle());
         }
 
         $filename = $slug . '.md';
