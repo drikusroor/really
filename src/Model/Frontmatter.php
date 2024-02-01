@@ -57,11 +57,11 @@ class Frontmatter
             $frontmatter = $this->addAttribute($frontmatter, 'slug', $this->slug);
         }
 
-        if (count($this->tags) > 0) {
+        if ($this->tags && count($this->tags) > 0) {
             $frontmatter = $this->addAttribute($frontmatter, 'tags', $this->tags);
         }
 
-        if (count($this->categories) > 0) {
+        if ($this->tags && count($this->categories) > 0) {
             $frontmatter = $this->addAttribute($frontmatter, 'categories', $this->categories);
         }
 
