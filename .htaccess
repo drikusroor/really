@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Do not apply the rule for requests that refer to actual files or directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Exclude requests that are already directed to the public directory
+RewriteCond %{REQUEST_URI} !^/public/
+
+# Forward all other requests to public/index.php
+RewriteRule ^(.*)$ public/index.php [L,QSA]
