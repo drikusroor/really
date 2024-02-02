@@ -4,6 +4,7 @@ export default {
   purge: [
     './content/**/*.(md|html)',
     './src/**/*.(php|twig|html|js)',
+    './index.{php,html}',
   ],
   theme: {
     extend: {},
