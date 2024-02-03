@@ -1,7 +1,11 @@
+{% set siteName = "Really" %}
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>{{ title }}</title>
+		{% block title %}
+			<title>{{ siteName }} | {{ title }}</title>
+		{% endblock %}
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,7 +18,9 @@
 
 		<nav class="bg-orange-500 p-4 text-white">
 			<div class="container mx-auto flex justify-between items-center">
-				<a href="/" class="text-lg font-bold">Microblog</a>
+				<a href="/" class="text-lg font-bold">
+					{{ siteName }}
+				</a>
 				<div>
 					<a href="/about" class="ml-4">About</a>
 					<a href="/contact" class="ml-4">Contact</a>
@@ -23,16 +29,15 @@
 		</nav>
 
 		<main class="container mx-auto p-4 flex-1">
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-				{% block content %}{% endblock %}
-			</div>
-		</main>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> {% block content %}{% endblock %}
+				</div>
+			</main>
 
-		<footer class="bg-orange-700 text-white p-4 text-center">
-			<p>©
-				{{ "now"|date("Y") }}
-				My Microblog. All rights reserved.</p>
-		</footer>
+			<footer class="bg-orange-700 text-white p-4 text-center">
+				<p>©
+					{{ "now"|date("Y") }}
+					{{ siteName }}. All rights reserved.</p>
+			</footer>
 
-	</body>
-</html>
+		</body>
+	</html>
