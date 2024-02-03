@@ -3,7 +3,7 @@ RewriteEngine On
 # Rewrite asset requests to the public/assets directory
 RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 
-# Forward requests for the root directly to public/index.php
+# Forward requests for the root directly to public/index.html
 RewriteRule ^$ public/index.html [L]
 
 # Attempt to serve HTML files from the public directory if they exist
