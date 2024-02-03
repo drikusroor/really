@@ -4,7 +4,6 @@ namespace Ainab\Really\Model;
 
 class Frontmatter
 {
-
     private $title;
     private $date;
     private $slug;
@@ -40,7 +39,7 @@ class Frontmatter
         $this->excerpt = $excerpt;
     }
 
-    
+
     public static function fromMarkdownString(string $markdown): Frontmatter
     {
         $frontmatter = substr($markdown, 0, strpos($markdown, '---', 3) + 3);

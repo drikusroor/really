@@ -4,11 +4,14 @@ namespace Ainab\Really\Model;
 
 use Ainab\Really\Model\Frontmatter;
 
-class Page {
-    public function __construct(private Frontmatter $frontmatter, private string $content) {
+class Page
+{
+    public function __construct(private Frontmatter $frontmatter, private string $content)
+    {
     }
 
-    public static function fromMarkdownString(string $markdown): Page {
+    public static function fromMarkdownString(string $markdown): Page
+    {
         $frontmatter = Frontmatter::fromMarkdownString($markdown);
         $content = Page::getContentFromMarkdown($markdown);
 
@@ -18,7 +21,8 @@ class Page {
         return new Page($frontmatter, $content);
     }
 
-    public static function getContentFromMarkdown(string $markdown): string {
+    public static function getContentFromMarkdown(string $markdown): string
+    {
         $content = $markdown;
         if (strpos($markdown, '---') === 0) {
             $content = substr($markdown, strpos($markdown, '---', 3) + 3);
@@ -26,55 +30,68 @@ class Page {
         return $content;
     }
 
-    public function getFrontmatter(): Frontmatter {
+    public function getFrontmatter(): Frontmatter
+    {
         return $this->frontmatter;
     }
 
-    public function getContent(): string {
+    public function getContent(): string
+    {
         return $this->content;
     }
 
-    public function getSlug(): string {
+    public function getSlug(): string
+    {
         return $this->frontmatter->getSlug() ?? '';
     }
 
-    public function getTitle(): string {
+    public function getTitle(): string
+    {
         return $this->frontmatter->getTitle() ?? '';
     }
 
-    public function getDate(): string {
+    public function getDate(): string
+    {
         return $this->frontmatter->getDate() ?? '';
     }
 
-    public function getTags(): array {
+    public function getTags(): array
+    {
         return $this->frontmatter->getTags() ?? [];
     }
 
-    public function getCategories(): array {
+    public function getCategories(): array
+    {
         return $this->frontmatter->getCategories() ?? [];
     }
 
-    public function getDraft(): bool {
+    public function getDraft(): bool
+    {
         return $this->frontmatter->getDraft() ?? false;
     }
 
-    public function getLayout(): string {
+    public function getLayout(): string
+    {
         return $this->frontmatter->getLayout() ?? 'page';
     }
 
-    public function getAuthor(): string {
+    public function getAuthor(): string
+    {
         return $this->frontmatter->getAuthor() ?? '';
     }
 
-    public function getExcerpt(): string {
+    public function getExcerpt(): string
+    {
         return $this->frontmatter->getExcerpt() ?? '';
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return $this->frontmatter->getTitle();
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'title' => $this->getTitle(),
             'date' => $this->getDate(),

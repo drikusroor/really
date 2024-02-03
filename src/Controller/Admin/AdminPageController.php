@@ -1,4 +1,5 @@
 <?php
+
 namespace Ainab\Really\Controller\Admin;
 
 use Ainab\Really\Controller\BaseController;
@@ -6,20 +7,23 @@ use Ainab\Really\Model\PageCollection;
 use Ainab\Really\Model\PostInput;
 use Ainab\Really\Service\ManagePageService;
 
-class AdminPageController extends BaseController {
-
-    public function __construct(private ManagePageService $managePageService) {
+class AdminPageController extends BaseController
+{
+    public function __construct(private ManagePageService $managePageService)
+    {
         parent::__construct();
     }
 
-    public function index($args = []) {
+    public function index($args = [])
+    {
         $pages = $this->managePageService->getPagesList();
         $args['pages'] = (new PageCollection($pages))->toArray();
 
         echo $this->twig->render('admin/pages/index.html.twig', $args);
     }
 
-    public function save() {
+    public function save()
+    {
         $formData = $_POST;
         $id = $formData['id'] ?? null;
         $postInput = PostInput::fromArray($formData);
@@ -32,7 +36,8 @@ class AdminPageController extends BaseController {
         return $this->index(['message' => 'Post created!', 'url' => "/$slug"]);
     }
 
-    public function edit($slug, $args = []) {
+    public function edit($slug, $args = [])
+    {
         $page = $this->managePageService->getPage($slug);
         $args['page'] = $page;
         $args['id'] = $slug;
@@ -40,12 +45,14 @@ class AdminPageController extends BaseController {
         return $this->index($args);
     }
 
-    public function delete($slug) {
+    public function delete($slug)
+    {
         $this->managePageService->delete($slug);
         return $this->index(['message' => 'Post deleted!']);
     }
 
-    public function rebuild() {
+    public function rebuild()
+    {
         try {
             $this->managePageService->rebuild();
         } catch (\Exception $e) {
@@ -53,5 +60,4 @@ class AdminPageController extends BaseController {
         }
         return $this->index(['message' => 'Index rebuilt!']);
     }
-
 }

@@ -33,7 +33,7 @@ class Container
         }
         $constructor = $reflector->getConstructor();
         if (is_null($constructor)) {
-            return new $concrete;
+            return new $concrete();
         }
         $dependencies = $constructor->getParameters();
         $instances = $this->resolveDependencies($dependencies);

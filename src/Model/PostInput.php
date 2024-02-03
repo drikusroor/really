@@ -2,8 +2,8 @@
 
 namespace Ainab\Really\Model;
 
-class PostInput {
-
+class PostInput
+{
     public function __construct(
         private string $title,
         private string $slug,
@@ -18,7 +18,8 @@ class PostInput {
     ) {
     }
 
-    public static function fromArray(array $data): self {
+    public static function fromArray(array $data): self
+    {
         return new self(
             $data['title'],
             $data['slug'],
@@ -33,44 +34,53 @@ class PostInput {
         );
     }
 
-    public function getTitle(): string {
+    public function getTitle(): string
+    {
         return $this->title;
     }
 
-    public function getSlug(): string {
+    public function getSlug(): string
+    {
         return $this->slug;
     }
 
-    public function getContent(): string {
+    public function getContent(): string
+    {
         return $this->content;
     }
 
-    public function getDate(): string {
+    public function getDate(): string
+    {
         return $this->date;
     }
 
-    public function getTags(): array {
+    public function getTags(): array
+    {
         return $this->tags;
     }
 
-    public function getCategories(): array {
+    public function getCategories(): array
+    {
         return $this->categories;
     }
 
-    public function getDraft(): bool {
+    public function getDraft(): bool
+    {
         return $this->draft;
     }
 
-    public function getLayout(): string {
+    public function getLayout(): string
+    {
         return $this->layout;
     }
 
-    public function getAuthor(): string {
+    public function getAuthor(): string
+    {
         return $this->author;
     }
 
-    public function getExcerpt(): string {
+    public function getExcerpt(): string
+    {
         return $this->excerpt;
     }
-
 }

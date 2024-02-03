@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Command to run PHP Code Beautifier and Fixer inside the Docker container
+docker exec really-web-1 ./vendor/bin/phpcbf --standard=PSR12 src/
+

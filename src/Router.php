@@ -4,7 +4,6 @@ namespace Ainab\Really;
 
 class Router
 {
-
     private $routes = [];
     private $currentGroupOptions = [];
 

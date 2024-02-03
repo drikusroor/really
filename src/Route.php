@@ -4,7 +4,6 @@ namespace Ainab\Really;
 
 class Route
 {
-
     private $path;
     private $action;
     private $matches;
@@ -24,7 +23,6 @@ class Route
         $regex = "#^$path$#i";
 
         if (!preg_match($regex, $url, $matches)) {
-
             return false;
         }
 

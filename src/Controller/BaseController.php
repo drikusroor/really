@@ -1,18 +1,21 @@
 <?php
+
 namespace Ainab\Really\Controller;
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-class BaseController {
-
+class BaseController
+{
     protected $twig;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->initializeTwig();
     }
 
-    protected function initializeTwig() {
+    protected function initializeTwig()
+    {
         // Define the path to your Twig templates
         $loader = new FilesystemLoader(__DIR__ . '/../templates');
 
@@ -22,5 +25,4 @@ class BaseController {
             // Other environment options can be set here
         ]);
     }
-
 }

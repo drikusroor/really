@@ -5,24 +5,26 @@ namespace Ainab\Really\Service;
 use Parsedown;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-
 use Ainab\Really\Model\Frontmatter;
 use Ainab\Really\Model\Page;
 use Ainab\Really\Model\PageCollection;
 use Ainab\Really\Model\PostInput;
 
-class ManagePageService {
-
+class ManagePageService
+{
     protected $twig;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->initializeTwig();
     }
 
-    public function index() {
+    public function index()
+    {
     }
 
-    public function save(PostInput $postInput) {
+    public function save(PostInput $postInput)
+    {
 
         $frontmatter = new Frontmatter(
             $postInput->getTitle(),
@@ -45,7 +47,8 @@ class ManagePageService {
         return $slug;
     }
 
-    public function delete($slug) {
+    public function delete($slug)
+    {
         $filename = $slug . '.md';
         $filepath = __DIR__ . '/../../content/pages/' . $filename;
         if (file_exists($filepath)) {
@@ -58,7 +61,8 @@ class ManagePageService {
         $this->generateIndex();
     }
 
-    public function rebuild() {
+    public function rebuild()
+    {
         $pages = $this->getPagesList();
         foreach ($pages as $page) {
             $html = $this->convertPageToHtml($page->getFrontmatter(), $page->getContent());
@@ -68,7 +72,8 @@ class ManagePageService {
         $this->generateIndex();
     }
 
-    private function getSlug(PostInput $postInput) {
+    private function getSlug(PostInput $postInput)
+    {
         if ($postInput->getSlug()) {
             return $postInput->getSlug();
         } else {
@@ -77,7 +82,8 @@ class ManagePageService {
         }
     }
 
-    private function saveMarkdownFile($slug, Frontmatter $frontmatter, string $content) {
+    private function saveMarkdownFile($slug, Frontmatter $frontmatter, string $content)
+    {
         $filename = $slug . '.md';
         $filepath = __DIR__ . '/../../content/pages/' . $filename;
 
@@ -86,7 +92,8 @@ class ManagePageService {
         }
     }
 
-    private function convertPageToHtml(Frontmatter $frontmatter, string $content, $args = []) {
+    private function convertPageToHtml(Frontmatter $frontmatter, string $content, $args = [])
+    {
         $parsedown = new Parsedown();
         $safeHtml = $parsedown->text($content);
 
@@ -98,28 +105,32 @@ class ManagePageService {
         ]);
     }
 
-    private function convertHomepageToHtml(Frontmatter $frontmatter, $pages) {
+    private function convertHomepageToHtml(Frontmatter $frontmatter, $pages)
+    {
         return $this->twig->render('pages/home.html.twig', [
             'title' => $frontmatter->getTitle(),
             'pages' => $pages
         ]);
     }
 
-    private function safeWriteHtmlFile($slug, $html) {
+    private function safeWriteHtmlFile($slug, $html)
+    {
         $publicPath = $_SERVER['DOCUMENT_ROOT'] . '/public/' . $slug . '.html';
         $file = fopen($publicPath, 'w');
         fwrite($file, $html);
         fclose($file);
     }
 
-    private function generateIndex() {
+    private function generateIndex()
+    {
         $pages = $this->getPagesList();
         $frontmatter = new Frontmatter('Pages', null, 'pages', null, null, true, 'page', null, 'This is an index of all pages.');
         $html = $this->convertHomepageToHtml($frontmatter, $pages);
         $this->safeWriteHtmlFile('index', $html);
     }
 
-    public function getPagesFilesList() {
+    public function getPagesFilesList()
+    {
         $pagesFiles = scandir(__DIR__ . '/../../content/pages');
         $pagesFiles = array_diff($pagesFiles, ['.', '..']);
         return $pagesFiles;
@@ -128,7 +139,8 @@ class ManagePageService {
     /**
      * @return Page[]
      */
-    public function getPagesList() {
+    public function getPagesList()
+    {
         $pagesFiles = $this->getPagesFilesList();
 
         $pages = [];
@@ -143,7 +155,8 @@ class ManagePageService {
         return $pages;
     }
 
-    public function getPage($slug) {
+    public function getPage($slug)
+    {
         $filename = $slug . '.md';
         $filepath = __DIR__ . '/../../content/pages/' . $filename;
         $file = file_get_contents($filepath);
@@ -152,7 +165,8 @@ class ManagePageService {
         return $page;
     }
 
-    protected function initializeTwig() {
+    protected function initializeTwig()
+    {
         $loader = new FilesystemLoader(__DIR__ . '/../templates');
         $this->twig = new Environment($loader);
     }
