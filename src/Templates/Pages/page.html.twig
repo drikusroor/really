@@ -1,7 +1,25 @@
 {% extends 'layouts/base.html.twig' %}
 
 {% block content %}
-    <article class="prose">
-        {{ content|raw }}
-    </article>
+
+	<h1 class="text-3xl font-bold">
+		{{ title }}
+	</h1>
+
+	<p class="text-sm text-gray-600">
+		{% if date %}
+			{{ date|date('F j, Y') }}
+		{% endif %}
+        {% if date and author %}
+            &middot;
+        {% endif %}
+		{% if author %}
+			By
+			{{ author }}
+		{% endif %}
+	</p>
+
+	<article class="prose mt-5">
+		{{ content|raw }}
+	</article>
 {% endblock %}
