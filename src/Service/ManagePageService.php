@@ -83,9 +83,8 @@ class ManagePageService {
         $pages = $this->getPagesList();
         $frontmatter = new Frontmatter('Pages', null, 'pages', null, null, true, 'page', null, 'This is an index of all pages.');
         $content = $this->getPagelistMarkdown($pages);
-        $this->saveMarkdownFile('pages', $frontmatter, $content);
         $html = $this->convertToHtml($frontmatter, $content);
-        $this->safeWriteHtmlFile('pages', $html);
+        $this->safeWriteHtmlFile('index', $html);
     }
 
     public function getPagesList() {
