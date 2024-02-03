@@ -9,7 +9,6 @@ $container = new DI\Container();
 $container->bind('ManagePageService', 'Ainab\Really\Service\ManagePageService');
 $container->bind('BaseController', 'Ainab\Really\Controller\BaseController');
 $container->bind('HomeController', 'Ainab\Really\Controller\HomeController');
-$container->bind('PageController', 'Ainab\Really\Controller\PageController');
 $container->bind('AdminHomeController', 'Ainab\Really\Controller\Admin\AdminHomeController');
 $container->bind('ErrorController', 'Ainab\Really\Controller\ErrorController');
 
@@ -29,7 +28,5 @@ $router->group(['prefix' => 'admin'], function ($router) {
     $router->addRoute(new Route('/', 'AdminHomeController@index'));
     $router->addRoute(new Route('/post', 'AdminHomeController@post'));
 });
-
-$router->addRoute(new Route('/:slug', 'PageController@index'));
 
 $router->execute($_SERVER['REQUEST_URI'], $container);
