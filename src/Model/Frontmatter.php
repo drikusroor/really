@@ -246,6 +246,15 @@ class Frontmatter
 
     private function addAttribute($frontmatter, $attribute, $value)
     {
+
+        if (is_array($value)) {
+            $value = implode(', ', $value);
+            // trim any leading or trailing commas
+            $value = trim($value, ',');
+            // remove any double spaces
+            $value = preg_replace('/\s+/', ' ', $value);
+        }
+
         if ($value) {
             $frontmatter .= $attribute . ': ' . $value . '
 ';

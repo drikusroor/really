@@ -12,6 +12,9 @@ class Page {
         $frontmatter = Frontmatter::fromMarkdownString($markdown);
         $content = Page::getContentFromMarkdown($markdown);
 
+        // remove whitelines from the beginning of the content and the end
+        $content = trim($content);
+
         return new Page($frontmatter, $content);
     }
 
@@ -32,10 +35,38 @@ class Page {
     }
 
     public function getSlug(): string {
-        return $this->frontmatter->getSlug();
+        return $this->frontmatter->getSlug() ?? '';
     }
 
     public function getTitle(): string {
-        return $this->frontmatter->getTitle();
+        return $this->frontmatter->getTitle() ?? '';
+    }
+
+    public function getDate(): string {
+        return $this->frontmatter->getDate() ?? '';
+    }
+
+    public function getTags(): array {
+        return $this->frontmatter->getTags() ?? [];
+    }
+
+    public function getCategories(): array {
+        return $this->frontmatter->getCategories() ?? [];
+    }
+
+    public function getDraft(): bool {
+        return $this->frontmatter->getDraft() ?? false;
+    }
+
+    public function getLayout(): string {
+        return $this->frontmatter->getLayout() ?? 'page';
+    }
+
+    public function getAuthor(): string {
+        return $this->frontmatter->getAuthor() ?? '';
+    }
+
+    public function getExcerpt(): string {
+        return $this->frontmatter->getExcerpt() ?? '';
     }
 }

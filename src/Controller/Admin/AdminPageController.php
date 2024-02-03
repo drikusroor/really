@@ -23,16 +23,24 @@ class AdminPageController extends BaseController {
         $formData = $_POST;
         $id = $formData['id'];
         $title = $formData['title'];
+        $slug = $formData['slug'];
         $content = $formData['content'];
+        $date = $formData['date'];
+        $tags = explode(',', $formData['tags']);
+        $categories = explode(',', $formData['categories']);
+        $draft = isset($formData['draft']); 
+        $layout = $formData['layout'];
+        $author = $formData['author'];
+        $excerpt = $formData['excerpt'];
 
-        $frontmatter = new Frontmatter($title);
-
-        // if id (current slug) is set, we are editing an existing page so we need to delete the old file
-        if ($id) {
-            $this->managePageService->delete($id);
-        }
+        $frontmatter = new Frontmatter($title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
 
         $slug = $this->managePageService->save($frontmatter, $content);
+
+        // if id (current slug) is set, we are editing an existing page so we need to delete the old file
+        if ($id && $id !== $slug) {
+            $this->managePageService->delete($id);
+        }
 
         return $this->index(['message' => 'Post created!', 'url' => "/$slug"]);
     }

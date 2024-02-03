@@ -1,13 +1,5 @@
 {% extends 'layouts/base.html.twig' %}
 
-{# if page is defined, extract the title and content from it #}
-{% if page is defined %}
-    {% set title = page.title %}
-    {% set content = page.content %}
-{% endif %}
-
-
-
 {% block content %}
 	<h1 class="text-4xl font-bold mb-4">Welcome to the Admin Dashboard</h1>
 	<p class="mb-4">This is the admin dashboard. You can manage your pages and posts here.</p>
@@ -17,8 +9,7 @@
 	<div class="mb-4 bg-white shadow-md rounded px-8 pt-6 pb-8">
 		<table class="w-full">
 			<thead>
-				<tr>
-				</tr>
+				<tr></tr>
 			</thead>
 			<tbody>
 				{% for page in pages %}
@@ -64,17 +55,53 @@
 
 	<!-- A form with an input field for the page title, a textarea for the page content and a submit button -->
 	<form action="/admin/pages/save" method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
-        <input type="hidden" name="id" value="{{ id ?? '' }}">
+		<input type="hidden" name="id" value="{{ id ?? '' }}">
 		<div class="mb-4">
 			<label for="title" class="block mb-2">Page Title</label>
-			<input type="text" name="title" id="title" class="w-full border border-gray-400 p-2 rounded" value="{{ title }}">
+			<input type="text" name="title" id="title" class="w-full border border-gray-400 p-2 rounded" value="{{ page.frontmatter.title ?? '' }}">
+		</div>
+		<div class="mb-4">
+			<label for="date" class="block mb-2">Date</label>
+			<input type="text" name="date" id="date" class="w-full border border-gray-400 p-2 rounded" value="{{ page.date ?? '' }}">
+		</div>
+		<div class="mb-4">
+			<label for="slug" class="block mb-2">Slug</label>
+			<input type="text" name="slug" id="slug" class="w-full border border-gray-400 p-2 rounded" value="{{ page.slug ?? '' }}">
+		</div>
+		<div class="mb-4">
+			<label for="tags" class="block mb-2">Tags</label>
+			<input type="text" name="tags" id="tags" class="w-full border border-gray-400 p-2 rounded" value="{{ page.tags is defined ? page.tags|join(',') : '' }}">
+		</div>
+		<div class="mb-4">
+			<label for="categories" class="block mb-2">Categories</label>
+			<input type="text" name="categories" id="categories" class="w-full border border-gray-400 p-2 rounded" value="{{ page.categories is defined ? page.categories|join(',') : '' }}">
+		</div>
+
+		<div class="mb-4">
+			<label for="draft" class="block mb-2">Draft</label>
+			<input type="checkbox" name="draft" id="draft" class="border border-gray-400 p-2 rounded" value="{{ page.draft ?? '' }}">
+		</div>
+		<div class="mb-4">
+			<label for="layout" class="block mb-2">Layout</label>
+			<select name="layout" id="layout" class="w-full border border-gray-400 p-2 rounded">
+				<option value="page" {{ page.layout == 'page' ? 'selected' : '' }}>Page</option>
+			</select>
+		</div>
+		<div class="mb-4">
+			<label for="author" class="block mb-2">Author</label>
+			<input type="text" name="author" id="author" class="w-full border border-gray-400 p-2 rounded" value="{{ page.author ?? '' }}">
+		</div>
+		<div class="mb-4">
+			<label for="excerpt" class="block mb-2">Excerpt</label>
+			<textarea name="excerpt" id="excerpt" cols="30" rows="10" class="w-full border border-gray-400 p-2 rounded">{{ page.excerpt ?? '' }}</textarea>
 		</div>
 		<div class="mb-4">
 			<label for="content" class="block mb-2">Page Content</label>
-			<textarea name="content" id="content" cols="30" rows="10" class="w-full border border-gray-400 p-2 rounded">{{ content }}</textarea>
+			<textarea name="content" id="content" cols="30" rows="10" class="w-full border border-gray-400 p-2 rounded">{{ page.content ?? '' }}</textarea>
 		</div>
 		<button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-            {{ page is defined ? 'Update' : 'Create' }} Page
-        </button>
+			{{ page is defined ? 'Update' : 'Create' }}
+			Page
+		</button>
 	</form>
 {% endblock %}
