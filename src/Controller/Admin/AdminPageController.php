@@ -21,10 +21,17 @@ class AdminPageController extends BaseController {
 
     public function save() {
         $formData = $_POST;
+        $id = $formData['id'];
         $title = $formData['title'];
         $content = $formData['content'];
 
         $frontmatter = new Frontmatter($title);
+
+        // if id (current slug) is set, we are editing an existing page so we need to delete the old file
+        if ($id) {
+            $this->managePageService->delete($id);
+        }
+
         $slug = $this->managePageService->save($frontmatter, $content);
 
         return $this->index(['message' => 'Post created!', 'url' => "/$slug"]);
@@ -33,10 +40,9 @@ class AdminPageController extends BaseController {
     public function edit($slug, $args = []) {
         $page = $this->managePageService->getPage($slug);
         $args['page'] = $page;
+        $args['id'] = $slug;
 
         return $this->index($args);
     }
-
-
 
 }

@@ -29,11 +29,25 @@ class ManagePageService {
         return $slug;
     }
 
+    public function delete($slug) {
+        $filename = $slug . '.md';
+        $filepath = __DIR__ . '/../../content/pages/' . $filename;
+        if (file_exists($filepath)) {
+            unlink($filepath);
+        }
+        $publicPath = $_SERVER['DOCUMENT_ROOT'] . '/public/' . $slug . '.html';
+        if (file_exists($publicPath)) {
+            unlink($publicPath);
+        }
+        $this->generateIndex();
+    }
+
     private function getSlug(Frontmatter $frontmatter) {
         if ($frontmatter->getSlug()) {
             return $frontmatter->getSlug();
         } else {
-            return strtolower(preg_replace('/[^a-z0-9]+/', '-', $frontmatter->getTitle())); // Sanitize title to generate slug
+            // Generate slug from title by sanitizing it, lowercasing it, and replacing spaces with hyphens
+            return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $frontmatter->getTitle()));
         }
     }
 
