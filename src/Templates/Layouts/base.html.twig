@@ -4,7 +4,9 @@
 <html lang="en">
 	<head>
 		{% block title %}
-			<title>{{ siteName }} | {{ title }}</title>
+			<title>{{ siteName }}
+				|
+				{{ title }}</title>
 		{% endblock %}
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,15 +31,16 @@
 		</nav>
 
 		<main class="container mx-auto p-4 flex-1">
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> {% block content %}{% endblock %}
-				</div>
-			</main>
+			<div>
+				{% block content %}{% endblock %}
+			</div>
+		</main>
 
-			<footer class="bg-orange-700 text-white p-4 text-center">
-				<p>©
-					{{ "now"|date("Y") }}
-					{{ siteName }}. All rights reserved.</p>
-			</footer>
+		<footer class="bg-orange-700 text-white p-4 text-center">
+			<p>©
+				{{ "now"|date("Y") }}
+				{{ siteName }}. All rights reserved.</p>
+		</footer>
 
-		</body>
-	</html>
+	</body>
+</html>
