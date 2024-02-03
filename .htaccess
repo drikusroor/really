@@ -6,6 +6,10 @@ RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 # Forward requests for the root directly to public/index.php
 RewriteRule ^$ public/index.php [L]
 
+# Attempt to serve HTML files from the public directory if they exist
+RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI}.html -f
+RewriteRule ^(.+)$ public/$1.html [L]
+
 # Do not apply the following rules for requests that refer to actual files or directories
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
