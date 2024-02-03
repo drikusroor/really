@@ -124,7 +124,17 @@ class ManagePageService
     private function generateIndex()
     {
         $pages = $this->getPagesList();
-        $frontmatter = new Frontmatter('Pages', null, 'pages', null, null, true, 'page', null, 'This is an index of all pages.');
+        $frontmatter = new Frontmatter(
+            'Pages',
+            null,
+            'pages',
+            null,
+            null,
+            true,
+            'page',
+            null,
+            'This is an index of all pages.'
+        );
         $html = $this->convertHomepageToHtml($frontmatter, $pages);
         $this->safeWriteHtmlFile('index', $html);
     }
