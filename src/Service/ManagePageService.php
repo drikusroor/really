@@ -73,7 +73,7 @@ class ManagePageService {
         $this->safeWriteHtmlFile('pages', $html);
     }
 
-    private function getPagesList() {
+    public function getPagesList() {
         $pages = scandir(__DIR__ . '/../../content/pages');
         $pages = array_diff($pages, ['.', '..']);
         return array_values(array_map(function ($page) {

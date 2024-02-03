@@ -6,10 +6,14 @@
 
     {# list of pages #}
     <h2 class="text-2xl font-bold mb-4">Pages</h2>
-    <ul class="mb-4">
+    <ul class="mb-4 bg-white shadow-md rounded px-8 pt-6 pb-8">
         {% for page in pages %}
             <li class="mb-2">
-                <a href="/admin/pages/edit/{{ page.id }}" class="text-blue-500 hover:text-blue-700">{{ page.title }}</a>
+                <a href="/admin/pages/edit/{{ page }}" class="text-blue-500 hover:text-blue-700">{{ page }}</a>
+                |
+                <a href="/{{ page }}" class="text-green-500 hover:text-green-700">View</a>
+                |
+                <a href="/admin/pages/delete/{{ page }}" class="text-red-500 hover:text-red-700">Delete</a>
             </li>
         {% endfor %}
     </ul>

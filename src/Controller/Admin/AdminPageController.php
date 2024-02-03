@@ -11,8 +11,12 @@ class AdminPageController extends BaseController {
         parent::__construct();
     }
 
-    public function index() {
-        echo $this->twig->render('admin/pages/index.html.twig');
+    public function index($args = []) {
+
+        $pages = $this->managePageService->getPagesList();
+        $args['pages'] = $pages;
+
+        echo $this->twig->render('admin/pages/index.html.twig', $args);
     }
 
     public function post() {
@@ -23,6 +27,7 @@ class AdminPageController extends BaseController {
         $frontmatter = new Frontmatter($title);
         $slug = $this->managePageService->save($frontmatter, $content);
 
-        echo $this->twig->render('admin/pages/index.html.twig', ['message' => 'Post created!', 'url' => "/$slug"]);
+        return $this->index(['message' => 'Post created!', 'url' => "/$slug"]);
     }
+
 }
