@@ -20,30 +20,29 @@ class ManagePageService {
     }
 
     public function save(Frontmatter $frontmatter, string $content) {
+        $slug = $this->getSlug($frontmatter);
+        $this->saveMarkdownFile($slug, $frontmatter, $content);
+        $html = $this->convertToHtml($frontmatter, $content);
+        $this->safeWriteHtmlFile($slug, $html);
+        $this->generateIndex();
+        return $slug;
+    }
 
+    private function getSlug(Frontmatter $frontmatter) {
         if ($frontmatter->getSlug()) {
-            $slug = $frontmatter->getSlug();
+            return $frontmatter->getSlug();
         } else {
-            $slug = strtolower($frontmatter->getTitle());
+            return strtolower(preg_replace('/[^a-z0-9]+/', '', $frontmatter->getTitle())); // Sanitize title to generate slug
         }
+    }
 
+    private function saveMarkdownFile($slug, Frontmatter $frontmatter, string $content) {
         $filename = $slug . '.md';
         $filepath = __DIR__ . '/../../content/pages/' . $filename;
 
-        $file = fopen($filepath, 'w');
-        fwrite($file, $frontmatter);
-        fwrite($file, $content);
-        fclose($file);
-
-        // now convert the page to html using a twig template
-        $html = $this->convertToHtml($frontmatter, $content);
-
-        // save the html to a file in the public directory
-        
-
-        $this->generateIndex();
-
-        return $slug;
+        if (false === file_put_contents($filepath, $frontmatter . $content)) {
+            throw new \Exception('Failed to save file');
+        }
     }
 
     private function convertToHtml(Frontmatter $frontmatter, string $content) {
@@ -66,27 +65,20 @@ class ManagePageService {
     }
 
     private function generateIndex() {
-
-        $pages = scandir(__DIR__ . '/../../content/pages');
-        $pages = array_diff($pages, ['.', '..']);
-        $pages = array_map(function ($page) {
-            return str_replace('.md', '', $page);
-        }, $pages);
-        $pages = array_values($pages);
-
-        
+        $pages = $this->getPagesList();
         $frontmatter = new Frontmatter('Pages', null, 'pages', null, null, true, 'page', null, 'This is an index of all pages.');
         $content = $this->getPagelistMarkdown($pages);
-        
-        $filename = 'pages.md';
-        $filepath = __DIR__ . '/../../content/pages/' . $filename;
-        
-        $file = fopen($filepath, 'w');
-        fwrite($file, $frontmatter);
-        fwrite($file, $content);
-        fclose($file);
+        $this->saveMarkdownFile('pages', $frontmatter, $content);
+        $html = $this->convertToHtml($frontmatter, $content);
+        $this->safeWriteHtmlFile('pages', $html);
+    }
 
-        return true;
+    private function getPagesList() {
+        $pages = scandir(__DIR__ . '/../../content/pages');
+        $pages = array_diff($pages, ['.', '..']);
+        return array_values(array_map(function ($page) {
+            return str_replace('.md', '', $page);
+        }, $pages));
     }
 
     private function getPagelistMarkdown($pages): string {
@@ -100,54 +92,8 @@ class ManagePageService {
         return $markdown;
     }
 
-    private function extractFrontmatter(string $fileContents)
-    {
-        // Initialize the result with empty frontmatter and content
-        $result = [
-            'frontmatter' => [],
-            'content' => ''
-        ];
-
-        // Regular expression to match the frontmatter and content
-        $pattern = '/^---\s*(.*?)\s*---\s*(.*)/s';
-
-        // Perform the regex match
-        if (preg_match($pattern, $fileContents, $matches)) {
-            // Split the frontmatter into lines
-            $frontmatterLines = explode("\n", trim($matches[1]));
-
-            // Parse each line of the frontmatter into key-value pairs
-            foreach ($frontmatterLines as $line) {
-                if (strpos($line, ':') !== false) {
-                    list($key, $value) = explode(':', $line, 2);
-                    $result['frontmatter'][trim($key)] = trim($value);
-                }
-            }
-
-            // Assign the remaining content
-            $result['content'] = $matches[2];
-        } else {
-            // If no frontmatter is found, assume the entire file is content
-            $result['content'] = $fileContents;
-        }
-
-        return $result;
-    }
-
-    private function safeGet($array, $key, $default = '')
-    {
-        return isset($array[$key]) ? $array[$key] : $default;
-    }
-
     protected function initializeTwig() {
-
-        // Define the path to your Twig templates
         $loader = new FilesystemLoader(__DIR__ . '/../templates');
-
-        // Create the Twig environment with optional settings
-        $this->twig = new Environment($loader, [
-            // 'cache' => '/path/to/compilation_cache',
-            // Other environment options can be set here
-        ]);
+        $this->twig = new Environment($loader);
     }
 }
