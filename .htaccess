@@ -3,7 +3,10 @@ RewriteEngine On
 # Rewrite asset requests to the public/assets directory
 RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 
-# Do not apply the rule for requests that refer to actual files or directories
+# Forward requests for the root directly to public/index.php
+RewriteRule ^$ public/index.php [L]
+
+# Do not apply the following rules for requests that refer to actual files or directories
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
