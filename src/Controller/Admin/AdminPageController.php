@@ -46,7 +46,11 @@ class AdminPageController extends BaseController {
     }
 
     public function rebuild() {
-        $this->managePageService->rebuild();
+        try {
+            $this->managePageService->rebuild();
+        } catch (\Exception $e) {
+            return $this->index(['error' => 'Error rebuilding index: ' . $e->getMessage()]);
+        }
         return $this->index(['message' => 'Index rebuilt!']);
     }
 

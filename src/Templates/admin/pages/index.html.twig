@@ -4,6 +4,24 @@
 	<h1 class="text-4xl font-bold mb-4">Welcome to the Admin Dashboard</h1>
 	<p class="mb-4">This is the admin dashboard. You can manage your pages and posts here.</p>
 
+	{% if message %}
+		<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 mt-4" role="alert">
+			<strong class="font-bold">Success!</strong>
+			<span class="block sm:inline">{{ message }}</span>
+
+			{% if url %}
+				<a href="{{ url }}" class="text-blue-500 hover:text-blue-700">View page</a>
+			{% endif %}
+		</div>
+	{% endif %}
+
+	{% if error %}
+		<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 mt-4" role="alert">
+			<strong class="font-bold">Error!</strong>
+			<span class="block sm:inline">{{ error }}</span>
+		</div>
+	{% endif %}
+
 	{# list of pages #}
 	<div class="flex justify-between">
 		<h2 class="text-2xl font-bold mb-4">Pages</h2>
@@ -52,17 +70,6 @@
 	{% endif %}
 
 	<h2 class="text-2xl font-bold mt-8 mb-4">Create a new page</h2>
-
-	{% if message %}
-		<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 mt-4" role="alert">
-			<strong class="font-bold">Success!</strong>
-			<span class="block sm:inline">{{ message }}</span>
-
-			{% if url %}
-				<a href="{{ url }}" class="text-blue-500 hover:text-blue-700">View page</a>
-			{% endif %}
-		</div>
-	{% endif %}
 
 	<!-- A form with an input field for the page title, a textarea for the page content and a submit button -->
 	<form action="/admin/pages/save" method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
