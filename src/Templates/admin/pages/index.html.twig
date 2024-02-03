@@ -76,7 +76,7 @@
 		<input type="hidden" name="id" value="{{ id ?? '' }}">
 		<div class="mb-4">
 			<label for="title" class="block mb-2">Page Title</label>
-			<input type="text" name="title" id="title" class="w-full border border-gray-400 p-2 rounded" value="{{ page.frontmatter.title ?? '' }}">
+			<input type="text" name="title" id="title" class="w-full border border-gray-400 p-2 rounded" value="{{ page.frontmatter.title ?? '' }}" required>
 		</div>
 		<div class="mb-4">
 			<label for="date" class="block mb-2">Date</label>
