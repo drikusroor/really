@@ -32,7 +32,7 @@ class ManagePageService {
         if ($frontmatter->getSlug()) {
             return $frontmatter->getSlug();
         } else {
-            return strtolower(preg_replace('/[^a-z0-9]+/', '', $frontmatter->getTitle())); // Sanitize title to generate slug
+            return strtolower(preg_replace('/[^a-z0-9]+/', '-', $frontmatter->getTitle())); // Sanitize title to generate slug
         }
     }
 
