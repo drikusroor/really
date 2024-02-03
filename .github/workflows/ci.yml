@@ -20,6 +20,9 @@ jobs:
         extensions: mbstring, xml # Add any extensions you need
         tools: php-cs-fixer, phpstan # Install PHP CodeSniffer, PHPStan
 
+    - name: Install Composer dependencies
+      run: composer install --no-progress --no-suggest --prefer-dist
+
     - name: Check PHP syntax
       run: find . -type f -name "*.php" -exec php -l {} \;
 

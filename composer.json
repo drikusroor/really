@@ -16,5 +16,8 @@
         {
             "name": "Drikus Roor"
         }
-    ]
+    ],
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.8"
+    }
 }
