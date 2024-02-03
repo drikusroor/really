@@ -2,8 +2,6 @@
 namespace Ainab\Really\Controller\Admin;
 
 use Ainab\Really\Controller\BaseController;
-use Ainab\Really\Model\Frontmatter;
-use Ainab\Really\Model\Page;
 use Ainab\Really\Model\PageCollection;
 use Ainab\Really\Model\PostInput;
 use Ainab\Really\Service\ManagePageService;
