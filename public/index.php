@@ -8,7 +8,6 @@ use Ainab\Really\Route;
 $container = new DI\Container();
 $container->bind('ManagePageService', 'Ainab\Really\Service\ManagePageService');
 $container->bind('BaseController', 'Ainab\Really\Controller\BaseController');
-$container->bind('HomeController', 'Ainab\Really\Controller\HomeController');
 $container->bind('AdminHomeController', 'Ainab\Really\Controller\Admin\AdminHomeController');
 $container->bind('AdminPageController', 'Ainab\Really\Controller\Admin\AdminPageController');
 $container->bind('ErrorController', 'Ainab\Really\Controller\ErrorController');
@@ -20,7 +19,6 @@ ini_set( 'display_errors','1');
 
 $router = new Router(
     [
-        new Route('/', 'HomeController@index'),
         new Route('/about', 'HomeController@about'),
     ]
 );
