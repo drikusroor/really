@@ -47,4 +47,9 @@ class AdminPageController extends BaseController {
         return $this->index(['message' => 'Post deleted!']);
     }
 
+    public function rebuild() {
+        $this->managePageService->rebuild();
+        return $this->index(['message' => 'Index rebuilt!']);
+    }
+
 }

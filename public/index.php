@@ -29,6 +29,7 @@ $router->group(['prefix' => 'admin'], function ($router) {
     $router->addRoute(new Route('/pages/save', 'AdminPageController@save'));
     $router->addRoute(new Route('/pages/edit/:slug', 'AdminPageController@edit'));
     $router->addRoute(new Route('/pages/delete/:slug', 'AdminPageController@delete'));
+    $router->addRoute(new Route('/pages/rebuild', 'AdminPageController@rebuild'));
 
 });
 

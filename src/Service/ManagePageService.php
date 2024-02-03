@@ -58,6 +58,16 @@ class ManagePageService {
         $this->generateIndex();
     }
 
+    public function rebuild() {
+        $pages = $this->getPagesList();
+        foreach ($pages as $page) {
+            $html = $this->convertPageToHtml($page->getFrontmatter(), $page->getContent());
+            $this->safeWriteHtmlFile($page->getFrontmatter()->getSlug(), $html);
+        }
+
+        $this->generateIndex();
+    }
+
     private function getSlug(PostInput $postInput) {
         if ($postInput->getSlug()) {
             return $postInput->getSlug();
