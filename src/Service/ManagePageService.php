@@ -7,6 +7,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 use Ainab\Really\Model\Frontmatter;
+use Ainab\Really\Model\Page;
 
 class ManagePageService {
 
@@ -79,6 +80,14 @@ class ManagePageService {
         return array_values(array_map(function ($page) {
             return str_replace('.md', '', $page);
         }, $pages));
+    }
+
+    public function getPage($slug) {
+        $filename = $slug . '.md';
+        $filepath = __DIR__ . '/../../content/pages/' . $filename;
+        $file = file_get_contents($filepath);
+        $page = Page::fromMarkdownString($file);
+        return $page;
     }
 
     private function getPagelistMarkdown($pages): string {

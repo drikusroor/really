@@ -19,7 +19,7 @@ class AdminPageController extends BaseController {
         echo $this->twig->render('admin/pages/index.html.twig', $args);
     }
 
-    public function post() {
+    public function save() {
         $formData = $_POST;
         $title = $formData['title'];
         $content = $formData['content'];
@@ -29,5 +29,14 @@ class AdminPageController extends BaseController {
 
         return $this->index(['message' => 'Post created!', 'url' => "/$slug"]);
     }
+
+    public function edit($slug, $args = []) {
+        $page = $this->managePageService->getPage($slug);
+        $args['page'] = $page;
+
+        return $this->index($args);
+    }
+
+
 
 }

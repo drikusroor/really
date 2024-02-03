@@ -28,7 +28,9 @@ $router = new Router(
 $router->group(['prefix' => 'admin'], function ($router) {
     $router->addRoute(new Route('/', 'AdminHomeController@index'));
     $router->addRoute(new Route('/pages', 'AdminPageController@index'));
-    $router->addRoute(new Route('/pages/post', 'AdminPageController@post'));
+    $router->addRoute(new Route('/pages/save', 'AdminPageController@save'));
+    $router->addRoute(new Route('/pages/edit/:slug', 'AdminPageController@edit'));
+    $router->addRoute(new Route('/pages/delete', 'AdminPageController@delete'));
 
 });
 

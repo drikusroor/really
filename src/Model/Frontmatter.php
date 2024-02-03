@@ -40,6 +40,72 @@ class Frontmatter
         $this->excerpt = $excerpt;
     }
 
+    
+    public static function fromMarkdownString(string $markdown): Frontmatter
+    {
+        $frontmatter = substr($markdown, 0, strpos($markdown, '---', 3) + 3);
+        return Frontmatter::fromString($frontmatter);
+    }
+
+    public static function fromString(string $frontmatter): Frontmatter
+    {
+        $frontmatter = str_replace('---', '', $frontmatter);
+        $attributes = explode("\n", $frontmatter);
+        $attributes = array_filter($attributes, function ($attribute) {
+            return $attribute !== '';
+        });
+
+        $title = null;
+        $date = null;
+        $slug = null;
+        $tags = [];
+        $categories = [];
+        $draft = false;
+        $layout = 'page';
+        $author = null;
+        $excerpt = null;
+
+        foreach ($attributes as $attribute) {
+            $attribute = explode(':', $attribute);
+            $attribute[0] = trim($attribute[0]);
+            $attribute[1] = trim($attribute[1]);
+
+            switch ($attribute[0]) {
+                case 'title':
+                    $title = $attribute[1];
+                    break;
+                case 'date':
+                    $date = $attribute[1];
+                    break;
+                case 'slug':
+                    $slug = $attribute[1];
+                    break;
+                case 'tags':
+                    $tags = explode(',', $attribute[1]);
+                    $tags = array_map('trim', $tags);
+                    break;
+                case 'categories':
+                    $categories = explode(',', $attribute[1]);
+                    $categories = array_map('trim', $categories);
+                    break;
+                case 'draft':
+                    $draft = $attribute[1] === 'true' ? true : false;
+                    break;
+                case 'layout':
+                    $layout = $attribute[1];
+                    break;
+                case 'author':
+                    $author = $attribute[1];
+                    break;
+                case 'excerpt':
+                    $excerpt = $attribute[1];
+                    break;
+            }
+        }
+
+        return new Frontmatter($title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
+    }
+
     public function __toString()
     {
         $frontmatter = '---
