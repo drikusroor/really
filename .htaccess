@@ -4,7 +4,7 @@ RewriteEngine On
 RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 
 # Forward requests for the root directly to public/index.php
-RewriteRule ^$ public/index.php [L]
+RewriteRule ^$ public/index.html [L]
 
 # Attempt to serve HTML files from the public directory if they exist
 RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI}.html -f
