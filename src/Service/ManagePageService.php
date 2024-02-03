@@ -8,6 +8,7 @@ use Twig\Loader\FilesystemLoader;
 
 use Ainab\Really\Model\Frontmatter;
 use Ainab\Really\Model\Page;
+use Ainab\Really\Model\PageCollection;
 use Ainab\Really\Model\PostInput;
 
 class ManagePageService {
@@ -38,7 +39,7 @@ class ManagePageService {
         $content = $postInput->getContent();
 
         $this->saveMarkdownFile($slug, $frontmatter, $content);
-        $html = $this->convertToHtml($frontmatter, $content);
+        $html = $this->convertPageToHtml($frontmatter, $content);
         $this->safeWriteHtmlFile($slug, $html);
         $this->generateIndex();
         return $slug;
@@ -75,16 +76,22 @@ class ManagePageService {
         }
     }
 
-    private function convertToHtml(Frontmatter $frontmatter, string $content, $args = []) {
+    private function convertPageToHtml(Frontmatter $frontmatter, string $content, $args = []) {
         $parsedown = new Parsedown();
         $safeHtml = $parsedown->text($content);
 
-        // Render the view using Twig
         return $this->twig->render('pages/page.html.twig', [
             'title' => $frontmatter->getTitle(),
             'date' => $frontmatter->getDate(),
             'content' => $safeHtml,
             ...$args
+        ]);
+    }
+
+    private function convertHomepageToHtml(Frontmatter $frontmatter, $pages) {
+        return $this->twig->render('pages/home.html.twig', [
+            'title' => $frontmatter->getTitle(),
+            'pages' => $pages
         ]);
     }
 
@@ -98,8 +105,7 @@ class ManagePageService {
     private function generateIndex() {
         $pages = $this->getPagesList();
         $frontmatter = new Frontmatter('Pages', null, 'pages', null, null, true, 'page', null, 'This is an index of all pages.');
-        $content = $this->getPagelistMarkdown($pages);
-        $html = $this->convertToHtml($frontmatter, $content, ['pages' => $pages]);
+        $html = $this->convertHomepageToHtml($frontmatter, $pages);
         $this->safeWriteHtmlFile('index', $html);
     }
 
@@ -134,17 +140,6 @@ class ManagePageService {
         $page = Page::fromMarkdownString($file);
 
         return $page;
-    }
-
-    private function getPagelistMarkdown($pages): string {
-        $markdown = '';
-
-        foreach ($pages as $page) {
-            $markdown .= '- [' . $page . '](/' . $page . ')
-';
-        }
-
-        return $markdown;
     }
 
     protected function initializeTwig() {
