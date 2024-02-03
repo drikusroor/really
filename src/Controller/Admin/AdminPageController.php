@@ -53,4 +53,9 @@ class AdminPageController extends BaseController {
         return $this->index($args);
     }
 
+    public function delete($slug) {
+        $this->managePageService->delete($slug);
+        return $this->index(['message' => 'Post deleted!']);
+    }
+
 }
