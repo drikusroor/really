@@ -69,4 +69,23 @@ class Page {
     public function getExcerpt(): string {
         return $this->frontmatter->getExcerpt() ?? '';
     }
+
+    public function __toString(): string {
+        return $this->frontmatter->getTitle();
+    }
+
+    public function toArray(): array {
+        return [
+            'title' => $this->getTitle(),
+            'date' => $this->getDate(),
+            'content' => $this->getContent(),
+            'slug' => $this->getSlug(),
+            'tags' => $this->getTags(),
+            'categories' => $this->getCategories(),
+            'draft' => $this->getDraft(),
+            'layout' => $this->getLayout(),
+            'author' => $this->getAuthor(),
+            'excerpt' => $this->getExcerpt()
+        ];
+    }
 }

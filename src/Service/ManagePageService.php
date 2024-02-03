@@ -8,6 +8,7 @@ use Twig\Loader\FilesystemLoader;
 
 use Ainab\Really\Model\Frontmatter;
 use Ainab\Really\Model\Page;
+use Ainab\Really\Model\PostInput;
 
 class ManagePageService {
 
@@ -20,8 +21,22 @@ class ManagePageService {
     public function index() {
     }
 
-    public function save(Frontmatter $frontmatter, string $content) {
-        $slug = $this->getSlug($frontmatter);
+    public function save(PostInput $postInput) {
+
+        $frontmatter = new Frontmatter(
+            $postInput->getTitle(),
+            $postInput->getDate(),
+            $this->getSlug($postInput),
+            $postInput->getTags(),
+            $postInput->getCategories(),
+            $postInput->getDraft(),
+            $postInput->getLayout(),
+            $postInput->getAuthor(),
+            $postInput->getExcerpt()
+        );
+        $slug = $frontmatter->getSlug();
+        $content = $postInput->getContent();
+
         $this->saveMarkdownFile($slug, $frontmatter, $content);
         $html = $this->convertToHtml($frontmatter, $content);
         $this->safeWriteHtmlFile($slug, $html);
@@ -42,12 +57,12 @@ class ManagePageService {
         $this->generateIndex();
     }
 
-    private function getSlug(Frontmatter $frontmatter) {
-        if ($frontmatter->getSlug()) {
-            return $frontmatter->getSlug();
+    private function getSlug(PostInput $postInput) {
+        if ($postInput->getSlug()) {
+            return $postInput->getSlug();
         } else {
             // Generate slug from title by sanitizing it, lowercasing it, and replacing spaces with hyphens
-            return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $frontmatter->getTitle()));
+            return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $postInput->getTitle()));
         }
     }
 
@@ -60,7 +75,7 @@ class ManagePageService {
         }
     }
 
-    private function convertToHtml(Frontmatter $frontmatter, string $content) {
+    private function convertToHtml(Frontmatter $frontmatter, string $content, $args = []) {
         $parsedown = new Parsedown();
         $safeHtml = $parsedown->text($content);
 
@@ -69,6 +84,7 @@ class ManagePageService {
             'title' => $frontmatter->getTitle(),
             'date' => $frontmatter->getDate(),
             'content' => $safeHtml,
+            ...$args
         ]);
     }
 
@@ -83,16 +99,32 @@ class ManagePageService {
         $pages = $this->getPagesList();
         $frontmatter = new Frontmatter('Pages', null, 'pages', null, null, true, 'page', null, 'This is an index of all pages.');
         $content = $this->getPagelistMarkdown($pages);
-        $html = $this->convertToHtml($frontmatter, $content);
+        $html = $this->convertToHtml($frontmatter, $content, ['pages' => $pages]);
         $this->safeWriteHtmlFile('index', $html);
     }
 
+    public function getPagesFilesList() {
+        $pagesFiles = scandir(__DIR__ . '/../../content/pages');
+        $pagesFiles = array_diff($pagesFiles, ['.', '..']);
+        return $pagesFiles;
+    }
+
+    /**
+     * @return Page[]
+     */
     public function getPagesList() {
-        $pages = scandir(__DIR__ . '/../../content/pages');
-        $pages = array_diff($pages, ['.', '..']);
-        return array_values(array_map(function ($page) {
-            return str_replace('.md', '', $page);
-        }, $pages));
+        $pagesFiles = $this->getPagesFilesList();
+
+        $pages = [];
+        foreach ($pagesFiles as $file) {
+            $file = file_get_contents(__DIR__ . '/../../content/pages/' . $file);
+            $page = Page::fromMarkdownString($file);
+
+            $pages[] = $page;
+        }
+
+
+        return $pages;
     }
 
     public function getPage($slug) {
@@ -100,6 +132,7 @@ class ManagePageService {
         $filepath = __DIR__ . '/../../content/pages/' . $filename;
         $file = file_get_contents($filepath);
         $page = Page::fromMarkdownString($file);
+
         return $page;
     }
 

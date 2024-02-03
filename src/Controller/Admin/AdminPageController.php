@@ -3,6 +3,9 @@ namespace Ainab\Really\Controller\Admin;
 
 use Ainab\Really\Controller\BaseController;
 use Ainab\Really\Model\Frontmatter;
+use Ainab\Really\Model\Page;
+use Ainab\Really\Model\PageCollection;
+use Ainab\Really\Model\PostInput;
 use Ainab\Really\Service\ManagePageService;
 
 class AdminPageController extends BaseController {
@@ -12,32 +15,18 @@ class AdminPageController extends BaseController {
     }
 
     public function index($args = []) {
-
         $pages = $this->managePageService->getPagesList();
-        $args['pages'] = $pages;
+        $args['pages'] = (new PageCollection($pages))->toArray();
 
         echo $this->twig->render('admin/pages/index.html.twig', $args);
     }
 
     public function save() {
         $formData = $_POST;
-        $id = $formData['id'];
-        $title = $formData['title'];
-        $slug = $formData['slug'];
-        $content = $formData['content'];
-        $date = $formData['date'];
-        $tags = explode(',', $formData['tags']);
-        $categories = explode(',', $formData['categories']);
-        $draft = isset($formData['draft']); 
-        $layout = $formData['layout'];
-        $author = $formData['author'];
-        $excerpt = $formData['excerpt'];
+        $id = $formData['id'] ?? null;
+        $postInput = PostInput::fromArray($formData);
+        $slug = $this->managePageService->save($postInput);
 
-        $frontmatter = new Frontmatter($title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
-
-        $slug = $this->managePageService->save($frontmatter, $content);
-
-        // if id (current slug) is set, we are editing an existing page so we need to delete the old file
         if ($id && $id !== $slug) {
             $this->managePageService->delete($id);
         }

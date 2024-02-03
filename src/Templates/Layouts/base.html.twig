@@ -24,8 +24,9 @@
 					{{ siteName }}
 				</a>
 				<div>
-					<a href="/about" class="ml-4">About</a>
-					<a href="/contact" class="ml-4">Contact</a>
+					{% for page in pages %}
+						<a href="{{ page.slug }}" class="ml-4">{{ page.title ?? 'Untitled' }}</a>
+					{% endfor %}
 					<a href="/admin" class="ml-4 bg-white text-orange-500 px-4 py-2 rounded-lg">Admin</a>
 				</div>
 			</div>
