@@ -1,0 +1,30 @@
+name: PHP CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  php-linting-and-code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml # Add any extensions you need
+        tools: php-cs-fixer, phpstan # Install PHP CodeSniffer, PHPStan
+
+    - name: Check PHP syntax
+      run: find . -type f -name "*.php" -exec php -l {} \;
+
+    - name: PHP CodeSniffer
+      run: ./vendor/bin/phpcs --standard=PSR12 src/ # Update the path to your PHP files
+
+    - name: PHPStan
+      run: ./vendor/bin/phpstan analyse src/ --level=max # Update the path and set the desired level
