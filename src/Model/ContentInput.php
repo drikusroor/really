@@ -2,9 +2,12 @@
 
 namespace Ainab\Really\Model;
 
+use ContentType;
+
 class ContentInput
 {
     public function __construct(
+        private string $contentType = ContentType::POST,
         private string $title,
         private string $slug,
         private string $content,
@@ -21,6 +24,7 @@ class ContentInput
     public static function fromArray(array $data): self
     {
         return new self(
+            $data['contentType'],
             $data['title'],
             $data['slug'],
             $data['content'],
@@ -32,6 +36,11 @@ class ContentInput
             $data['author'],
             $data['excerpt']
         );
+    }
+
+    public function getContentType(): string
+    {
+        return $this->contentType;
     }
 
     public function getTitle(): string

@@ -16,7 +16,7 @@ class AdminPageController extends BaseController
 
     public function index($args = [])
     {
-        $pages = $this->manageContentService->getPagesList();
+        $pages = $this->manageContentService->getContentList();
         $args['pages'] = (new PageCollection($pages))->toArray();
 
         echo $this->twig->render('admin/pages/index.html.twig', $args);
@@ -38,7 +38,7 @@ class AdminPageController extends BaseController
 
     public function edit($slug, $args = [])
     {
-        $page = $this->manageContentService->getPage($slug);
+        $page = $this->manageContentService->getContentItem($slug);
         $args['page'] = $page;
         $args['id'] = $slug;
 

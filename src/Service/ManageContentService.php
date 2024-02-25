@@ -7,8 +7,8 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Ainab\Really\Model\Frontmatter;
 use Ainab\Really\Model\Page;
-use Ainab\Really\Model\PageCollection;
 use Ainab\Really\Model\ContentInput;
+use ContentType;
 
 class ManageContentService
 {
@@ -25,8 +25,8 @@ class ManageContentService
 
     public function save(ContentInput $contentInput)
     {
-
         $frontmatter = new Frontmatter(
+            $contentInput->getContentType(),
             $contentInput->getTitle(),
             $contentInput->getDate(),
             $this->getSlug($contentInput),
@@ -41,7 +41,7 @@ class ManageContentService
         $content = $contentInput->getContent();
 
         $this->saveMarkdownFile($slug, $frontmatter, $content);
-        $html = $this->convertPageToHtml($frontmatter, $content);
+        $html = $this->convertContentToHtml($frontmatter, $content);
         $this->safeWriteHtmlFile($slug, $html);
         $this->generateIndex();
         return $slug;
@@ -64,6 +64,7 @@ class ManageContentService
     public function preview(ContentInput $contentInput)
     {
         $frontmatter = new Frontmatter(
+            $contentInput->getContentType(),
             $contentInput->getTitle(),
             $contentInput->getDate(),
             $this->getSlug($contentInput),
@@ -74,15 +75,15 @@ class ManageContentService
             $contentInput->getAuthor(),
             $contentInput->getExcerpt()
         );
-        $html = $this->convertPageToHtml($frontmatter, $contentInput->getContent(), ['preview' => true]);
+        $html = $this->convertContentToHtml($frontmatter, $contentInput->getContent(), ['preview' => true]);
         return $html;
     }
 
     public function rebuild()
     {
-        $pages = $this->getPagesList();
+        $pages = $this->getContentList();
         foreach ($pages as $page) {
-            $html = $this->convertPageToHtml($page->getFrontmatter(), $page->getContent());
+            $html = $this->convertContentToHtml($page->getFrontmatter(), $page->getContent());
             $this->safeWriteHtmlFile($page->getFrontmatter()->getSlug(), $html);
         }
 
@@ -102,14 +103,15 @@ class ManageContentService
     private function saveMarkdownFile($slug, Frontmatter $frontmatter, string $content)
     {
         $filename = $slug . '.md';
-        $filepath = __DIR__ . '/../../db/pages/' . $filename;
+        $contentType = $frontmatter->getContentType();
+        $filepath = __DIR__ . '/../../db/' . $contentType . '/' . $filename;
 
         if (false === file_put_contents($filepath, $frontmatter . $content)) {
             throw new \Exception('Failed to save file');
         }
     }
 
-    private function convertPageToHtml(Frontmatter $frontmatter, string $content, $args = [])
+    private function convertContentToHtml(Frontmatter $frontmatter, string $content, $args = [])
     {
         $parsedown = new Parsedown();
         $safeHtml = $parsedown->text($content);
@@ -140,8 +142,9 @@ class ManageContentService
 
     private function generateIndex()
     {
-        $pages = $this->getPagesList();
+        $pages = $this->getContentList();
         $frontmatter = new Frontmatter(
+            ContentType::PAGE,
             'Pages',
             null,
             'pages',
@@ -156,23 +159,24 @@ class ManageContentService
         $this->safeWriteHtmlFile('index', $html);
     }
 
-    public function getPagesFilesList()
+    public function getContentFilesList()
     {
-        $pagesFiles = scandir(__DIR__ . '/../../db/pages');
+        $pagesFiles = scandir(__DIR__ . '/../../db/content/');
         $pagesFiles = array_diff($pagesFiles, ['.', '..']);
+        
         return $pagesFiles;
     }
 
     /**
      * @return Page[]
      */
-    public function getPagesList()
+    public function getContentList()
     {
-        $pagesFiles = $this->getPagesFilesList();
+        $pagesFiles = $this->getContentFilesList();
 
         $pages = [];
         foreach ($pagesFiles as $file) {
-            $file = file_get_contents(__DIR__ . '/../../db/pages/' . $file);
+            $file = file_get_contents(__DIR__ . '/../../db/content/' . $file);
             $page = Page::fromMarkdownString($file);
 
             $pages[] = $page;
@@ -182,10 +186,10 @@ class ManageContentService
         return $pages;
     }
 
-    public function getPage($slug)
+    public function getContentItem($slug)
     {
         $filename = $slug . '.md';
-        $filepath = __DIR__ . '/../../db/pages/' . $filename;
+        $filepath = __DIR__ . '/../../db/content/' . $filename;
         $file = file_get_contents($filepath);
         $page = Page::fromMarkdownString($file);
 

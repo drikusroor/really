@@ -2,8 +2,11 @@
 
 namespace Ainab\Really\Model;
 
+use ContentType;
+
 class Frontmatter
 {
+    private $contentType = ContentType::POST;
     private $title;
     private $date;
     private $slug;
@@ -15,6 +18,7 @@ class Frontmatter
     private $excerpt;
 
     public function __construct(
+        string $contentType = ContentType::POST,
         string $title,
         $date = null,
         ?string $slug = null,
@@ -25,6 +29,7 @@ class Frontmatter
         ?string $author = null,
         ?string $excerpt = null
     ) {
+        $this->contentType = $contentType;
         $this->title = $title;
         if (!$date) {
             $date = \date('Y-m-d');
@@ -54,6 +59,7 @@ class Frontmatter
             return $attribute !== '';
         });
 
+        $type = ContentType::POST;
         $title = null;
         $date = null;
         $slug = null;
@@ -70,6 +76,9 @@ class Frontmatter
             $attribute[1] = trim($attribute[1]);
 
             switch ($attribute[0]) {
+                case 'contentType':
+                    $contentType = $attribute[1];
+                    break;
                 case 'title':
                     $title = $attribute[1];
                     break;
@@ -102,13 +111,15 @@ class Frontmatter
             }
         }
 
-        return new Frontmatter($title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
+        return new Frontmatter($contentType, $title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
     }
 
     public function __toString()
     {
         $frontmatter = '---
 ';
+
+        $frontmatter = $this->addAttribute($frontmatter, 'contentType', $this->contentType);
 
         if ($this->title) {
             $frontmatter = $this->addAttribute($frontmatter, 'title', $this->title);
@@ -151,6 +162,11 @@ class Frontmatter
 ';
 
         return $frontmatter;
+    }
+
+    public function getContentType()
+    {
+        return $this->contentType;
     }
 
     public function getTitle()
@@ -196,6 +212,11 @@ class Frontmatter
     public function getExcerpt()
     {
         return $this->excerpt;
+    }
+
+    public function setContentType($contentType)
+    {
+        $this->contentType = $contentType;
     }
 
     public function setTitle($title)
