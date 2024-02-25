@@ -61,6 +61,23 @@ class ManagePageService
         $this->generateIndex();
     }
 
+    public function preview(PostInput $postInput)
+    {
+        $frontmatter = new Frontmatter(
+            $postInput->getTitle(),
+            $postInput->getDate(),
+            $this->getSlug($postInput),
+            $postInput->getTags(),
+            $postInput->getCategories(),
+            $postInput->getDraft(),
+            $postInput->getLayout(),
+            $postInput->getAuthor(),
+            $postInput->getExcerpt()
+        );
+        $html = $this->convertPageToHtml($frontmatter, $postInput->getContent(), ['preview' => true]);
+        return $html;
+    }
+
     public function rebuild()
     {
         $pages = $this->getPagesList();
