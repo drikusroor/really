@@ -60,4 +60,15 @@ class AdminPageController extends BaseController
         }
         return $this->index(['message' => 'Index rebuilt!']);
     }
+
+    public function preview()
+    {
+        $formData = $_POST;
+        $id = $formData['id'] ?? null;
+        $postInput = PostInput::fromArray($formData);
+
+        $html = $this->managePageService->preview($postInput);
+
+        echo $html;
+    }
 }

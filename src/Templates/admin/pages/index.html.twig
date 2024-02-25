@@ -69,7 +69,12 @@
 		<p class="mb-3">No pages found.</p>
 	{% endif %}
 
-	<h2 class="text-2xl font-bold mt-8 mb-4">Create a new page</h2>
+	{% if id is defined %}
+		<h2 class="text-2xl font-bold mt-8 mb-4">Edit page "{{ page.frontmatter.title }}"</h2>
+	{% else %}
+		<h2 class="text-2xl font-bold mt-8 mb-4">Create a new page</h2>
+	{% endif %}
+
 
 	<!-- A form with an input field for the page title, a textarea for the page content and a submit button -->
 	<form action="/admin/pages/save" method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
@@ -121,5 +126,11 @@
 			{{ page is defined ? 'Update' : 'Create' }}
 			Page
 		</button>
+
+		{# preview button that should submit the form to /admin/pages/preview in a new tab #}
+		<button type="submit" formaction="/admin/pages/preview" formtarget="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+			Preview {{ page is defined ? 'Changes' : 'Page' }}
+		</button>
 	</form>
+
 {% endblock %}

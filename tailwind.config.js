@@ -2,7 +2,7 @@
 export default {
   content: [],
   purge: [
-    './content/**/*.(md|html)',
+    './db/**/*.(md|html)',
     './src/**/*.(php|twig|html|js)',
     './index.{php,html}',
   ],

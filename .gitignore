@@ -3,4 +3,4 @@ vendor
 .DS_Store
 
 public/**/*.html
-content/**/*.md
+db/**/*.md

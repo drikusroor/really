@@ -50,7 +50,7 @@ class ManagePageService
     public function delete($slug)
     {
         $filename = $slug . '.md';
-        $filepath = __DIR__ . '/../../content/pages/' . $filename;
+        $filepath = __DIR__ . '/../../db/pages/' . $filename;
         if (file_exists($filepath)) {
             unlink($filepath);
         }
@@ -59,6 +59,23 @@ class ManagePageService
             unlink($publicPath);
         }
         $this->generateIndex();
+    }
+
+    public function preview(PostInput $postInput)
+    {
+        $frontmatter = new Frontmatter(
+            $postInput->getTitle(),
+            $postInput->getDate(),
+            $this->getSlug($postInput),
+            $postInput->getTags(),
+            $postInput->getCategories(),
+            $postInput->getDraft(),
+            $postInput->getLayout(),
+            $postInput->getAuthor(),
+            $postInput->getExcerpt()
+        );
+        $html = $this->convertPageToHtml($frontmatter, $postInput->getContent(), ['preview' => true]);
+        return $html;
     }
 
     public function rebuild()
@@ -85,7 +102,7 @@ class ManagePageService
     private function saveMarkdownFile($slug, Frontmatter $frontmatter, string $content)
     {
         $filename = $slug . '.md';
-        $filepath = __DIR__ . '/../../content/pages/' . $filename;
+        $filepath = __DIR__ . '/../../db/pages/' . $filename;
 
         if (false === file_put_contents($filepath, $frontmatter . $content)) {
             throw new \Exception('Failed to save file');
@@ -141,7 +158,7 @@ class ManagePageService
 
     public function getPagesFilesList()
     {
-        $pagesFiles = scandir(__DIR__ . '/../../content/pages');
+        $pagesFiles = scandir(__DIR__ . '/../../db/pages');
         $pagesFiles = array_diff($pagesFiles, ['.', '..']);
         return $pagesFiles;
     }
@@ -155,7 +172,7 @@ class ManagePageService
 
         $pages = [];
         foreach ($pagesFiles as $file) {
-            $file = file_get_contents(__DIR__ . '/../../content/pages/' . $file);
+            $file = file_get_contents(__DIR__ . '/../../db/pages/' . $file);
             $page = Page::fromMarkdownString($file);
 
             $pages[] = $page;
@@ -168,7 +185,7 @@ class ManagePageService
     public function getPage($slug)
     {
         $filename = $slug . '.md';
-        $filepath = __DIR__ . '/../../content/pages/' . $filename;
+        $filepath = __DIR__ . '/../../db/pages/' . $filename;
         $file = file_get_contents($filepath);
         $page = Page::fromMarkdownString($file);
 
