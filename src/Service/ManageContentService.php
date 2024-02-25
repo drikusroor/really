@@ -8,9 +8,9 @@ use Twig\Loader\FilesystemLoader;
 use Ainab\Really\Model\Frontmatter;
 use Ainab\Really\Model\Page;
 use Ainab\Really\Model\PageCollection;
-use Ainab\Really\Model\PostInput;
+use Ainab\Really\Model\ContentInput;
 
-class ManagePageService
+class ManageContentService
 {
     protected $twig;
 
@@ -23,22 +23,22 @@ class ManagePageService
     {
     }
 
-    public function save(PostInput $postInput)
+    public function save(ContentInput $contentInput)
     {
 
         $frontmatter = new Frontmatter(
-            $postInput->getTitle(),
-            $postInput->getDate(),
-            $this->getSlug($postInput),
-            $postInput->getTags(),
-            $postInput->getCategories(),
-            $postInput->getDraft(),
-            $postInput->getLayout(),
-            $postInput->getAuthor(),
-            $postInput->getExcerpt()
+            $contentInput->getTitle(),
+            $contentInput->getDate(),
+            $this->getSlug($contentInput),
+            $contentInput->getTags(),
+            $contentInput->getCategories(),
+            $contentInput->getDraft(),
+            $contentInput->getLayout(),
+            $contentInput->getAuthor(),
+            $contentInput->getExcerpt()
         );
         $slug = $frontmatter->getSlug();
-        $content = $postInput->getContent();
+        $content = $contentInput->getContent();
 
         $this->saveMarkdownFile($slug, $frontmatter, $content);
         $html = $this->convertPageToHtml($frontmatter, $content);
@@ -61,20 +61,20 @@ class ManagePageService
         $this->generateIndex();
     }
 
-    public function preview(PostInput $postInput)
+    public function preview(ContentInput $contentInput)
     {
         $frontmatter = new Frontmatter(
-            $postInput->getTitle(),
-            $postInput->getDate(),
-            $this->getSlug($postInput),
-            $postInput->getTags(),
-            $postInput->getCategories(),
-            $postInput->getDraft(),
-            $postInput->getLayout(),
-            $postInput->getAuthor(),
-            $postInput->getExcerpt()
+            $contentInput->getTitle(),
+            $contentInput->getDate(),
+            $this->getSlug($contentInput),
+            $contentInput->getTags(),
+            $contentInput->getCategories(),
+            $contentInput->getDraft(),
+            $contentInput->getLayout(),
+            $contentInput->getAuthor(),
+            $contentInput->getExcerpt()
         );
-        $html = $this->convertPageToHtml($frontmatter, $postInput->getContent(), ['preview' => true]);
+        $html = $this->convertPageToHtml($frontmatter, $contentInput->getContent(), ['preview' => true]);
         return $html;
     }
 
@@ -89,13 +89,13 @@ class ManagePageService
         $this->generateIndex();
     }
 
-    private function getSlug(PostInput $postInput)
+    private function getSlug(ContentInput $contentInput)
     {
-        if ($postInput->getSlug()) {
-            return $postInput->getSlug();
+        if ($contentInput->getSlug()) {
+            return $contentInput->getSlug();
         } else {
             // Generate slug from title by sanitizing it, lowercasing it, and replacing spaces with hyphens
-            return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $postInput->getTitle()));
+            return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $contentInput->getTitle()));
         }
     }
 

@@ -6,7 +6,7 @@ use Ainab\Really\Router;
 use Ainab\Really\Route;
 
 $container = new DI\Container();
-$container->bind('ManagePageService', 'Ainab\Really\Service\ManagePageService');
+$container->bind('ManageContentService', 'Ainab\Really\Service\ManageContentService');
 $container->bind('BaseController', 'Ainab\Really\Controller\BaseController');
 $container->bind('AdminHomeController', 'Ainab\Really\Controller\Admin\AdminHomeController');
 $container->bind('AdminPageController', 'Ainab\Really\Controller\Admin\AdminPageController');

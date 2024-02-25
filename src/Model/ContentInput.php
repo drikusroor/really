@@ -2,7 +2,7 @@
 
 namespace Ainab\Really\Model;
 
-class PostInput
+class ContentInput
 {
     public function __construct(
         private string $title,
