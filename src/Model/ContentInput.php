@@ -2,12 +2,10 @@
 
 namespace Ainab\Really\Model;
 
-use ContentType;
-
 class ContentInput
 {
     public function __construct(
-        private string $contentType = ContentType::POST,
+        private string $contentType,
         private string $title,
         private string $slug,
         private string $content,
@@ -17,7 +15,9 @@ class ContentInput
         private bool $draft = false,
         private string $layout = 'page',
         private string $author = '',
-        private string $excerpt = ''
+        private string $excerpt = '',
+        private string $filepath = ''
+
     ) {
     }
 
@@ -34,7 +34,8 @@ class ContentInput
             isset($data['draft']),
             $data['layout'],
             $data['author'],
-            $data['excerpt']
+            $data['excerpt'],
+            $data['filepath'],
         );
     }
 
@@ -91,5 +92,10 @@ class ContentInput
     public function getExcerpt(): string
     {
         return $this->excerpt;
+    }
+
+    public function getFilepath(): string
+    {
+        return $this->filepath;
     }
 }

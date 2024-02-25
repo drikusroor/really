@@ -1,6 +1,7 @@
 <?php
 
 namespace Ainab\Really;
+use Ainab\Really\Controller\ErrorController;
 
 class Router
 {
@@ -56,5 +57,13 @@ class Router
                 return $route->execute($container);
             }
         }
+
+        return $this->notFound($container);
+    }
+
+    private function notFound($container)
+    {
+        $controller = new ErrorController();
+        return $controller->notFound();
     }
 }

@@ -25,22 +25,29 @@ class AdminPageController extends BaseController
     public function save()
     {
         $formData = $_POST;
-        $id = $formData['id'] ?? null;
+        $prevFilepath = $formData['prevFilepath'] ?? null;
+        $filepath = $formData['filepath'] ?? null;
         $contentInput = ContentInput::fromArray($formData);
         $slug = $this->manageContentService->save($contentInput);
 
-        if ($id && $id !== $slug) {
-            $this->manageContentService->delete($id);
+        if ($prevFilepath && $prevFilepath !== $filepath) {
+            $this->manageContentService->delete($prevFilepath);
         }
 
         return $this->index(['message' => 'Post created!', 'url' => "/$slug"]);
     }
 
-    public function edit($slug, $args = [])
+    public function edit($args = [])
     {
-        $page = $this->manageContentService->getContentItem($slug);
+        $fullPath = $_GET['fullPath'] ?? null;
+
+        if (!$fullPath) {
+            return $this->index(['error' => 'No full path provided']);
+        }
+
+        $page = $this->manageContentService->getContentItem($fullPath);
         $args['page'] = $page;
-        $args['id'] = $slug;
+        $args['filepath'] = $fullPath;
 
         return $this->index($args);
     }

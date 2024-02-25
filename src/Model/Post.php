@@ -4,21 +4,21 @@ namespace Ainab\Really\Model;
 
 use Ainab\Really\Model\Frontmatter;
 
-class Page
+class Post
 {
     public function __construct(private Frontmatter $frontmatter, private string $content, private string $path = '')
     {
     }
 
-    public static function fromMarkdownString(string $markdown): Page
+    public static function fromMarkdownString(string $markdown): Post
     {
         $frontmatter = Frontmatter::fromMarkdownString($markdown);
-        $content = Page::getContentFromMarkdown($markdown);
+        $content = Post::getContentFromMarkdown($markdown);
 
         // remove whitelines from the beginning of the content and the end
         $content = trim($content);
 
-        return new Page($frontmatter, $content);
+        return new Post($frontmatter, $content);
     }
 
     public static function getContentFromMarkdown(string $markdown): string
@@ -72,7 +72,7 @@ class Page
 
     public function getLayout(): string
     {
-        return $this->frontmatter->getLayout() ?? 'page';
+        return $this->frontmatter->getLayout() ?? 'post';
     }
 
     public function getAuthor(): string

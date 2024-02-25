@@ -1,5 +1,7 @@
 <?php
 
+namespace Ainab\Really\Model;
+
 
 class ContentType
 {

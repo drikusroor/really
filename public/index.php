@@ -5,6 +5,7 @@ use Ainab\Really\DI;
 use Ainab\Really\Router;
 use Ainab\Really\Route;
 
+
 $container = new DI\Container();
 $container->bind('ManageContentService', 'Ainab\Really\Service\ManageContentService');
 $container->bind('BaseController', 'Ainab\Really\Controller\BaseController');
@@ -20,17 +21,18 @@ ini_set( 'display_errors','1');
 $router = new Router(
     [
         new Route('/about', 'HomeController@about'),
-    ]
-);
-
-$router->group(['prefix' => 'admin'], function ($router) {
-    $router->addRoute(new Route('/', 'AdminHomeController@index'));
-    $router->addRoute(new Route('/pages', 'AdminPageController@index'));
-    $router->addRoute(new Route('/pages/save', 'AdminPageController@save'));
-    $router->addRoute(new Route('/pages/edit/:slug', 'AdminPageController@edit'));
-    $router->addRoute(new Route('/pages/delete/:slug', 'AdminPageController@delete'));
-    $router->addRoute(new Route('/pages/rebuild', 'AdminPageController@rebuild'));
-    $router->addRoute(new Route('/pages/preview', 'AdminPageController@preview'));
-});
-
+        ]
+    );
+    
+    $router->group(['prefix' => 'admin'], function ($router) {
+        $router->addRoute(new Route('/', 'AdminHomeController@index'));
+        $router->addRoute(new Route('/pages', 'AdminPageController@index'));
+        $router->addRoute(new Route('/pages/save', 'AdminPageController@save'));
+        $router->addRoute(new Route('/pages/edit', 'AdminPageController@edit'));
+        $router->addRoute(new Route('/pages/delete', 'AdminPageController@delete'));
+        $router->addRoute(new Route('/pages/rebuild', 'AdminPageController@rebuild'));
+        $router->addRoute(new Route('/pages/preview', 'AdminPageController@preview'));
+        $router->addRoute(new Route('/not-found', 'ErrorController@notFound'));
+    });
+    
 $router->execute($_SERVER['REQUEST_URI'], $container);

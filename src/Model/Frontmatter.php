@@ -2,7 +2,6 @@
 
 namespace Ainab\Really\Model;
 
-use ContentType;
 
 class Frontmatter
 {
@@ -18,7 +17,7 @@ class Frontmatter
     private $excerpt;
 
     public function __construct(
-        string $contentType = ContentType::POST,
+        string $contentType,
         string $title,
         $date = null,
         ?string $slug = null,
@@ -59,7 +58,7 @@ class Frontmatter
             return $attribute !== '';
         });
 
-        $type = ContentType::POST;
+        $contentType = ContentType::POST;
         $title = null;
         $date = null;
         $slug = null;

@@ -2,13 +2,17 @@
 
 namespace Ainab\Really\Service;
 
+use Ainab\Really\Model\ContentFile;
 use Parsedown;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Ainab\Really\Model\Frontmatter;
 use Ainab\Really\Model\Page;
 use Ainab\Really\Model\ContentInput;
-use ContentType;
+use Ainab\Really\Model\ContentType;
+use Ainab\Really\Model\Post;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class ManageContentService
 {
@@ -37,23 +41,26 @@ class ManageContentService
             $contentInput->getAuthor(),
             $contentInput->getExcerpt()
         );
+        $filename = $contentInput->getFilepath();
         $slug = $frontmatter->getSlug();
         $content = $contentInput->getContent();
 
-        $this->saveMarkdownFile($slug, $frontmatter, $content);
+        $this->saveMarkdownFile($filename, $frontmatter, $content);
         $html = $this->convertContentToHtml($frontmatter, $content);
-        $this->safeWriteHtmlFile($slug, $html);
+        $this->safeWriteHtmlFile($filename, $html);
         $this->generateIndex();
         return $slug;
     }
 
-    public function delete($slug)
+    public function delete(string $filename)
     {
-        $filename = $slug . '.md';
-        $filepath = __DIR__ . '/../../db/pages/' . $filename;
+        $filepath = __DIR__ . '/../../db/content/' . $filename;
         if (file_exists($filepath)) {
             unlink($filepath);
         }
+        $file = file_get_contents($filepath);
+        $frontmatter = Frontmatter::fromMarkdownString($file);
+        $slug = $frontmatter->getSlug();
         $publicPath = $_SERVER['DOCUMENT_ROOT'] . '/public/' . $slug . '.html';
         if (file_exists($publicPath)) {
             unlink($publicPath);
@@ -100,11 +107,15 @@ class ManageContentService
         }
     }
 
-    private function saveMarkdownFile($slug, Frontmatter $frontmatter, string $content)
+    private function saveMarkdownFile(string $filepath, Frontmatter $frontmatter, string $content)
     {
-        $filename = $slug . '.md';
-        $contentType = $frontmatter->getContentType();
-        $filepath = __DIR__ . '/../../db/' . $contentType . '/' . $filename;
+        $filepath = __DIR__ . '/../../db/content/' . $filepath;
+
+        // Create directory if it doesn't exist
+        $directory = dirname($filepath);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
 
         if (false === file_put_contents($filepath, $frontmatter . $content)) {
             throw new \Exception('Failed to save file');
@@ -167,34 +178,57 @@ class ManageContentService
 
     public function getContentFilesList()
     {
-        $pagesFiles = scandir(__DIR__ . '/../../db/content/');
-        $pagesFiles = array_diff($pagesFiles, ['.', '..']);
-        
-        return $pagesFiles;
+        $contentFiles = [];
+        $directory = new RecursiveDirectoryIterator(__DIR__ . '/../../db/content/');
+        $iterator = new RecursiveIteratorIterator($directory);
+
+        foreach ($iterator as $file) {
+            if ($file->isFile()) {
+                $filename = $file->getFilename();
+                if (pathinfo($filename, PATHINFO_EXTENSION) === 'md') {
+                    $filepath = $file->getPathname();
+                    $path = str_replace(__DIR__ . '/../../db/content/', '', $filepath);
+                    $path = str_replace($filename, '', $path);
+                    $contentFiles[] = new ContentFile($filename, $path);
+                }
+            }
+        }
+
+        return $contentFiles;
     }
 
     /**
      * @return Page[]
      */
-    public function getContentList()
+    public function getContentList(ContentType $contentTypeFilter = null)
     {
-        $pagesFiles = $this->getContentFilesList();
+        $contentFiles = $this->getContentFilesList();
 
-        $pages = [];
-        foreach ($pagesFiles as $file) {
-            $file = file_get_contents(__DIR__ . '/../../db/content/' . $file);
-            $page = Page::fromMarkdownString($file);
+        $items = [];
+        foreach ($contentFiles as $contentFile) {
+            $file = file_get_contents(__DIR__ . '/../../db/content/' . $contentFile->getFullPath());
+            $contentType = Frontmatter::fromMarkdownString($file)->getContentType();
 
-            $pages[] = $page;
+            if ($contentTypeFilter && $contentType !== $contentTypeFilter) {
+                continue;
+            }
+
+            if ($contentType === ContentType::PAGE) {
+                $item = Page::fromMarkdownString($file);
+            } else {
+                $item = Post::fromMarkdownString($file);
+            }
+
+            $item->setPath($contentFile->getPath() . $contentFile->getFilename());
+
+            $items[] = $item;
         }
 
-
-        return $pages;
+        return $items;
     }
 
-    public function getContentItem($slug)
+    public function getContentItem($filename)
     {
-        $filename = $slug . '.md';
         $filepath = __DIR__ . '/../../db/content/' . $filename;
         $file = file_get_contents($filepath);
         $page = Page::fromMarkdownString($file);
