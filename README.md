@@ -33,7 +33,7 @@ Really is a lightweight, flat-file PHP microblog platform designed for simplicit
 
 ## Usage
 
-- **Creating Content**: Add markdown files to the `content/pages` and `content/posts` directories to create static pages and blog posts.
+- **Creating Content**: Add markdown files to the `db/pages` and `db/posts` directories to create static pages and blog posts.
 - **Admin Panel**: Access the admin panel by navigating to `/admin`. Default login credentials can be configured in the `.env` file.
 - **Customizing Styles**: Modify the TailwindCSS configuration and styles in the `src/css` directory and rebuild using Bun.
 

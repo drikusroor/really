@@ -8,7 +8,7 @@ services:
     volumes:
       - .:/var/www/html  # Mount the project directory to the working directory in the container
       - ./public/media:/var/www/html/public/media  # Persistent volume for uploaded files
-      - ./content:/var/www/html/content  # Persistent volume for content (markdown files)
+      - ./db:/var/www/html/db  # Persistent volume for db (markdown files & sqlite db)
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html
     restart: always
