@@ -16,7 +16,8 @@ class AdminContentController extends BaseController
 
     public function index($args = [])
     {
-        $pages = $this->manageContentService->getContentList();
+        $contentType = $_GET['contentType'] ?? null;
+        $pages = $this->manageContentService->getContentList($contentType);
         $args['pages'] = (new PageCollection($pages))->toArray();
 
         echo $this->twig->render('admin/pages/index.html.twig', $args);

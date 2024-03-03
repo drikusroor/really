@@ -176,7 +176,7 @@ class ManageContentService
         $this->safeWriteHtmlFile('index', $html);
     }
 
-    public function getContentFilesList()
+    public function getContentFilesList(ContentType $contentTypeFilter = null)
     {
         $contentFiles = [];
         $directory = new RecursiveDirectoryIterator(__DIR__ . '/../../db/content/');
@@ -189,6 +189,14 @@ class ManageContentService
                     $filepath = $file->getPathname();
                     $path = str_replace(__DIR__ . '/../../db/content/', '', $filepath);
                     $path = str_replace($filename, '', $path);
+                    $fileContents = file_get_contents($filepath);
+                    $frontmatter = Frontmatter::fromMarkdownString($fileContents);
+                    $contentType = $frontmatter->getContentType();
+
+                    if ($contentTypeFilter && $contentType !== $contentTypeFilter) {
+                        continue;
+                    }
+
                     $contentFiles[] = new ContentFile($filename, $path);
                 }
             }
@@ -202,7 +210,7 @@ class ManageContentService
      */
     public function getContentList(ContentType $contentTypeFilter = null)
     {
-        $contentFiles = $this->getContentFilesList();
+        $contentFiles = $this->getContentFilesList($contentTypeFilter);
 
         $items = [];
         foreach ($contentFiles as $contentFile) {
