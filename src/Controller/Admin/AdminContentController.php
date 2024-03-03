@@ -7,7 +7,7 @@ use Ainab\Really\Model\PageCollection;
 use Ainab\Really\Model\ContentInput;
 use Ainab\Really\Service\ManageContentService;
 
-class AdminPageController extends BaseController
+class AdminContentController extends BaseController
 {
     public function __construct(private ManageContentService $manageContentService)
     {
