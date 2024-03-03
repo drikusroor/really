@@ -86,8 +86,8 @@
 		<div class="mb-4">
 			<label for="contentType" class="block mb-2">Content type</label>
 			<select name="contentType" id="contentType" class="w-full border border-gray-400 p-2 rounded" required>
-				<option value="page" {{ contentType == 'page' ? 'selected' : '' }}>Page</option>
-				<option value="post" {{ contentType == 'post' ? 'selected' : '' }}>Post</option>
+				<option value="page" {{ page.contentType == 'page' ? 'selected' : '' }}>Page</option>
+				<option value="post" {{ page.contentType == 'post' ? 'selected' : '' }}>Post</option>
 			</select>
 		</div>
 		<div class="mb-4">

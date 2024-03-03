@@ -90,6 +90,11 @@ class Page
         return $this->path;
     }
 
+    public function getContentType(): string
+    {
+        return $this->frontmatter->getContentType();
+    }
+
     public function setPath(string $path): void
     {
         $this->path = $path;
@@ -114,6 +119,7 @@ class Page
             'author' => $this->getAuthor(),
             'excerpt' => $this->getExcerpt(),
             'path' => $this->getPath(),
+            'contentType' => $this->getContentType(),
         ];
     }
 }
