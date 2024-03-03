@@ -156,6 +156,10 @@ class Frontmatter
             $frontmatter = $this->addAttribute($frontmatter, 'excerpt', $this->excerpt);
         }
 
+        if ($this->contentType === ContentType::POST) {
+            $frontmatter = $this->addAttribute($frontmatter, 'contentType', 'post');
+        }
+
         $frontmatter .= '---
 
 ';
