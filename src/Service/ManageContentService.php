@@ -161,7 +161,7 @@ class ManageContentService
     {
         $pages = $this->getContentList();
         $frontmatter = new Frontmatter(
-            ContentType::PAGE,
+            ContentType::PAGE->value,
             'Pages',
             null,
             'pages',
@@ -191,9 +191,10 @@ class ManageContentService
                     $path = str_replace($filename, '', $path);
                     $fileContents = file_get_contents($filepath);
                     $frontmatter = Frontmatter::fromMarkdownString($fileContents);
-                    $contentType = $frontmatter->getContentType();
+                    $contentTypeValue = $frontmatter->getContentType();
+                    $contentType = ContentType::fromValueOrDefault($contentTypeValue);
 
-                    if ($contentTypeFilter && $contentType !== $contentTypeFilter) {
+                    if ($contentTypeFilter && $contentTypeFilter->value && $contentType->value !== $contentTypeFilter->value) {
                         continue;
                     }
 
@@ -216,10 +217,6 @@ class ManageContentService
         foreach ($contentFiles as $contentFile) {
             $file = file_get_contents(__DIR__ . '/../../db/content/' . $contentFile->getFullPath());
             $contentType = Frontmatter::fromMarkdownString($file)->getContentType();
-
-            if ($contentTypeFilter && $contentType !== $contentTypeFilter) {
-                continue;
-            }
 
             if ($contentType === ContentType::PAGE) {
                 $item = Page::fromMarkdownString($file);

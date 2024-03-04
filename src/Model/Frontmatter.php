@@ -76,7 +76,8 @@ class Frontmatter
 
             switch ($attribute[0]) {
                 case 'contentType':
-                    $contentType = $attribute[1];
+                    $contentTypeValue = $attribute[1];
+                    $contentType = ContentType::fromValueOrDefault($contentTypeValue);
                     break;
                 case 'title':
                     $title = $attribute[1];
@@ -110,7 +111,7 @@ class Frontmatter
             }
         }
 
-        return new Frontmatter($contentType, $title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
+        return new Frontmatter($contentType->value, $title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
     }
 
     public function __toString()
@@ -156,8 +157,9 @@ class Frontmatter
             $frontmatter = $this->addAttribute($frontmatter, 'excerpt', $this->excerpt);
         }
 
-        if ($this->contentType === ContentType::POST) {
-            $frontmatter = $this->addAttribute($frontmatter, 'contentType', 'post');
+        if ($this->contentType) {
+            $contentType = ContentType::fromValueOrDefault($this->contentType);
+            $frontmatter = $this->addAttribute($frontmatter, 'contentType', $contentType->value);
         }
 
         $frontmatter .= '---

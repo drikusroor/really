@@ -43,6 +43,19 @@
 					{% for page in pages %}
 						<tr>
 							<td>{{ page.slug }}</td>
+							<td>{{ page.title }}</td>
+							<td>
+							{% if page.contentType == 'post' %}
+								<span class="rounded-lg bg-indigo-700 text-white px-2 py-1 text-sm capitalize font-bold">{{ page.contentType ?? 'page' }}</span>
+							{% else %}
+								<span class="rounded-lg bg-green-700 text-white px-2 py-1 text-sm capitalize font-bold">{{ page.contentType ?? 'page' }}</span>
+							{% endif %}
+							</td>
+							{% if page.date %}
+								<td>{{ page.date|date('Y-m-d') }}</td>
+							{% else %}
+								<td></td>
+							{% endif %}
 							<td>
 								<div class="text-center">
 									<a href="/{{ page.slug }}" class="text-green-500 hover:text-green-700">View</a>

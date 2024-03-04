@@ -3,12 +3,15 @@
 namespace Ainab\Really\Controller\Admin;
 
 use Ainab\Really\Controller\BaseController;
+use Ainab\Really\Model\ContentType;
 use Ainab\Really\Model\PageCollection;
 use Ainab\Really\Model\ContentInput;
 use Ainab\Really\Service\ManageContentService;
 
 class AdminContentController extends BaseController
 {
+    protected ContentType $contentType;
+
     public function __construct(private ManageContentService $manageContentService)
     {
         parent::__construct();
@@ -16,8 +19,7 @@ class AdminContentController extends BaseController
 
     public function index($args = [])
     {
-        $contentType = $_GET['contentType'] ?? null;
-        $pages = $this->manageContentService->getContentList($contentType);
+        $pages = $this->manageContentService->getContentList($this->contentType ?? null);
         $args['pages'] = (new PageCollection($pages))->toArray();
 
         echo $this->twig->render('admin/pages/index.html.twig', $args);
@@ -35,12 +37,12 @@ class AdminContentController extends BaseController
             $this->manageContentService->delete($prevFilepath);
         }
 
-        return $this->index(['message' => 'Post created!', 'url' => "/$slug"]);
+        return $this->edit(['message' => 'Post created!', 'url' => "/$slug", 'fullPath' => $filepath]);
     }
 
     public function edit($args = [])
     {
-        $fullPath = $_GET['fullPath'] ?? null;
+        $fullPath = $_GET['fullPath'] ?? $args['fullPath'] ?? null;
 
         if (!$fullPath) {
             return $this->index(['error' => 'No full path provided']);

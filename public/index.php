@@ -11,6 +11,8 @@ $container->bind('ManageContentService', 'Ainab\Really\Service\ManageContentServ
 $container->bind('BaseController', 'Ainab\Really\Controller\BaseController');
 $container->bind('AdminHomeController', 'Ainab\Really\Controller\Admin\AdminHomeController');
 $container->bind('AdminContentController', 'Ainab\Really\Controller\Admin\AdminContentController');
+$container->bind('AdminPageController', 'Ainab\Really\Controller\Admin\AdminPageController');
+$container->bind('AdminPostController', 'Ainab\Really\Controller\Admin\AdminPostController');
 $container->bind('ErrorController', 'Ainab\Really\Controller\ErrorController');
 
 // These lines are for DEVELOPMENT only.  You should never display errors
@@ -26,12 +28,21 @@ $router = new Router(
     
     $router->group(['prefix' => 'admin'], function ($router) {
         $router->addRoute(new Route('/', 'AdminHomeController@index'));
-        $router->addRoute(new Route('/pages', 'AdminContentController@index'));
-        $router->addRoute(new Route('/pages/save', 'AdminContentController@save'));
-        $router->addRoute(new Route('/pages/edit', 'AdminContentController@edit'));
-        $router->addRoute(new Route('/pages/delete', 'AdminContentController@delete'));
-        $router->addRoute(new Route('/pages/rebuild', 'AdminContentController@rebuild'));
-        $router->addRoute(new Route('/pages/preview', 'AdminContentController@preview'));
+
+        $router->addRoute(new Route('/pages', 'AdminPageController@index'));
+        $router->addRoute(new Route('/pages/save', 'AdminPageController@save'));
+        $router->addRoute(new Route('/pages/edit', 'AdminPageController@edit'));
+        $router->addRoute(new Route('/pages/delete', 'AdminPageController@delete'));
+        $router->addRoute(new Route('/pages/rebuild', 'AdminPageController@rebuild'));
+        $router->addRoute(new Route('/pages/preview', 'AdminPageController@preview'));
+
+        $router->addRoute(new Route('/posts', 'AdminPostController@index'));
+        $router->addRoute(new Route('/posts/save', 'AdminPostController@save'));
+        $router->addRoute(new Route('/posts/edit', 'AdminPostController@edit'));
+        $router->addRoute(new Route('/posts/delete', 'AdminPostController@delete'));
+        $router->addRoute(new Route('/posts/rebuild', 'AdminPostController@rebuild'));
+        $router->addRoute(new Route('/posts/preview', 'AdminPostController@preview'));
+        
         $router->addRoute(new Route('/not-found', 'ErrorController@notFound'));
     });
     
