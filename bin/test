@@ -1,0 +1,4 @@
+#/bin/bash
+
+# Run php unit tests inside the Docker container using the following command:
+docker exec really-web-1 composer test
