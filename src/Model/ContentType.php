@@ -2,7 +2,6 @@
 
 namespace Ainab\Really\Model;
 
-
 enum ContentType: string
 {
     case PAGE = 'page';

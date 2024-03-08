@@ -17,7 +17,6 @@ class ContentInput
         private string $author = '',
         private string $excerpt = '',
         private string $filepath = ''
-
     ) {
     }
 

@@ -2,7 +2,6 @@
 
 namespace Ainab\Really\Model;
 
-
 class Frontmatter
 {
     private $contentType = ContentType::POST;

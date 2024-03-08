@@ -1,6 +1,7 @@
 <?php
 
 namespace Ainab\Really;
+
 use Ainab\Really\Controller\ErrorController;
 
 class Router

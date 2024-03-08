@@ -2,7 +2,6 @@
 
 namespace Ainab\Really\Model;
 
-
 class ContentFile
 {
     public function __construct(

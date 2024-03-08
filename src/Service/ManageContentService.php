@@ -146,12 +146,12 @@ class ManageContentService
     private function safeWriteHtmlFile($slug, $html)
     {
         $publicPath = $_SERVER['DOCUMENT_ROOT'] . '/public/' . $slug . '.html';
-        
+
         $directory = dirname($publicPath);
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
         }
-        
+
         $file = fopen($publicPath, 'w');
         fwrite($file, $html);
         fclose($file);
