@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Command to run PHP Code linter inside the Docker container
+docker exec really-web-1 ./vendor/bin/phpcs --standard=PSR12 src/
+
+

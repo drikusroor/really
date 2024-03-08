@@ -194,7 +194,11 @@ class ManageContentService
                     $contentTypeValue = $frontmatter->getContentType();
                     $contentType = ContentType::fromValueOrDefault($contentTypeValue);
 
-                    if ($contentTypeFilter && $contentTypeFilter->value && $contentType->value !== $contentTypeFilter->value) {
+                    if (
+                        $contentTypeFilter &&
+                        $contentTypeFilter->value &&
+                        $contentType->value !== $contentTypeFilter->value
+                    ) {
                         continue;
                     }
 

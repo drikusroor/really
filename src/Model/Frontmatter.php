@@ -110,7 +110,18 @@ class Frontmatter
             }
         }
 
-        return new Frontmatter($contentType->value, $title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
+        return new Frontmatter(
+            $contentType->value,
+            $title,
+            $date,
+            $slug,
+            $tags,
+            $categories,
+            $draft,
+            $layout,
+            $author,
+            $excerpt
+        );
     }
 
     public function __toString()
