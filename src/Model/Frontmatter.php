@@ -4,6 +4,7 @@ namespace Ainab\Really\Model;
 
 class Frontmatter
 {
+    private $contentType = ContentType::POST;
     private $title;
     private $date;
     private $slug;
@@ -15,6 +16,7 @@ class Frontmatter
     private $excerpt;
 
     public function __construct(
+        string $contentType,
         string $title,
         $date = null,
         ?string $slug = null,
@@ -25,6 +27,7 @@ class Frontmatter
         ?string $author = null,
         ?string $excerpt = null
     ) {
+        $this->contentType = $contentType;
         $this->title = $title;
         if (!$date) {
             $date = \date('Y-m-d');
@@ -54,6 +57,7 @@ class Frontmatter
             return $attribute !== '';
         });
 
+        $contentType = ContentType::POST;
         $title = null;
         $date = null;
         $slug = null;
@@ -70,6 +74,10 @@ class Frontmatter
             $attribute[1] = trim($attribute[1]);
 
             switch ($attribute[0]) {
+                case 'contentType':
+                    $contentTypeValue = $attribute[1];
+                    $contentType = ContentType::fromValueOrDefault($contentTypeValue);
+                    break;
                 case 'title':
                     $title = $attribute[1];
                     break;
@@ -102,13 +110,26 @@ class Frontmatter
             }
         }
 
-        return new Frontmatter($title, $date, $slug, $tags, $categories, $draft, $layout, $author, $excerpt);
+        return new Frontmatter(
+            $contentType->value,
+            $title,
+            $date,
+            $slug,
+            $tags,
+            $categories,
+            $draft,
+            $layout,
+            $author,
+            $excerpt
+        );
     }
 
     public function __toString()
     {
         $frontmatter = '---
 ';
+
+        $frontmatter = $this->addAttribute($frontmatter, 'contentType', $this->contentType);
 
         if ($this->title) {
             $frontmatter = $this->addAttribute($frontmatter, 'title', $this->title);
@@ -146,11 +167,21 @@ class Frontmatter
             $frontmatter = $this->addAttribute($frontmatter, 'excerpt', $this->excerpt);
         }
 
+        if ($this->contentType) {
+            $contentType = ContentType::fromValueOrDefault($this->contentType);
+            $frontmatter = $this->addAttribute($frontmatter, 'contentType', $contentType->value);
+        }
+
         $frontmatter .= '---
 
 ';
 
         return $frontmatter;
+    }
+
+    public function getContentType()
+    {
+        return $this->contentType;
     }
 
     public function getTitle()
@@ -196,6 +227,11 @@ class Frontmatter
     public function getExcerpt()
     {
         return $this->excerpt;
+    }
+
+    public function setContentType($contentType)
+    {
+        $this->contentType = $contentType;
     }
 
     public function setTitle($title)

@@ -2,9 +2,10 @@
 
 namespace Ainab\Really\Model;
 
-class PostInput
+class ContentInput
 {
     public function __construct(
+        private string $contentType,
         private string $title,
         private string $slug,
         private string $content,
@@ -14,13 +15,15 @@ class PostInput
         private bool $draft = false,
         private string $layout = 'page',
         private string $author = '',
-        private string $excerpt = ''
+        private string $excerpt = '',
+        private string $filepath = ''
     ) {
     }
 
     public static function fromArray(array $data): self
     {
         return new self(
+            $data['contentType'],
             $data['title'],
             $data['slug'],
             $data['content'],
@@ -30,8 +33,14 @@ class PostInput
             isset($data['draft']),
             $data['layout'],
             $data['author'],
-            $data['excerpt']
+            $data['excerpt'],
+            $data['filepath'],
         );
+    }
+
+    public function getContentType(): string
+    {
+        return $this->contentType;
     }
 
     public function getTitle(): string
@@ -82,5 +91,10 @@ class PostInput
     public function getExcerpt(): string
     {
         return $this->excerpt;
+    }
+
+    public function getFilepath(): string
+    {
+        return $this->filepath;
     }
 }

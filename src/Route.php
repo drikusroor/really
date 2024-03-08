@@ -22,12 +22,20 @@ class Route
         $path = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $this->path);
         $regex = "#^$path$#i";
 
-        if (!preg_match($regex, $url, $matches)) {
+        // Split the URL into path and query parameters
+        $urlParts = explode('?', $url);
+        $path = $urlParts[0];
+        $query = isset($urlParts[1]) ? $urlParts[1] : '';
+
+        if (!preg_match($regex, $path, $matches)) {
             return false;
         }
 
         array_shift($matches);
         $this->matches = $matches;
+
+        // Parse the query parameters and store them in $this->params
+        parse_str($query, $this->params);
 
         return true;
     }
