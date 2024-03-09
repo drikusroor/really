@@ -1,6 +1,8 @@
 <?php
 
-class SimpleJWT {
+namespace Ainab\Really\Service;
+
+class JwtService {
     private $secretKey;
     private $algorithm;
 
@@ -21,6 +23,10 @@ class SimpleJWT {
 
     // Generate a JWT token
     public function generateToken($payload) {
+        if (isset($payload['password'])) {
+            unset($payload['password']);
+        }
+
         $header = json_encode(['typ' => 'JWT', 'alg' => $this->algorithm]);
         $payload = json_encode($payload);
 

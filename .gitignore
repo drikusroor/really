@@ -7,3 +7,6 @@ db/**/*.md
 
 # ignore php unit result cache
 .phpunit.result.cache
+
+# db
+db/**/*.json

@@ -4,7 +4,8 @@
     "require": {
         "erusev/parsedown-extra": "^0.8.1",
         "ezyang/htmlpurifier": "^4.17",
-        "twig/twig": "^3.8"
+        "twig/twig": "^3.8",
+        "ramsey/uuid": "^4.7"
     },
     "license": "MIT",
     "autoload": {

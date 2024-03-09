@@ -14,6 +14,10 @@ $container->bind('AdminContentController', 'Ainab\Really\Controller\Admin\AdminC
 $container->bind('AdminPageController', 'Ainab\Really\Controller\Admin\AdminPageController');
 $container->bind('AdminPostController', 'Ainab\Really\Controller\Admin\AdminPostController');
 $container->bind('ErrorController', 'Ainab\Really\Controller\ErrorController');
+$container->bind('AuthController', 'Ainab\Really\Controller\AuthController');
+$container->bind('UserService', 'Ainab\Really\Service\UserService');
+$container->bind('JwtService', 'Ainab\Really\Service\JwtService');
+
 
 // These lines are for DEVELOPMENT only.  You should never display errors
 // in a production environment.
@@ -29,6 +33,7 @@ $router = new Router(
     $router->group(['prefix' => 'admin'], function ($router) {
         $router->addRoute(new Route('/', 'AdminHomeController@index'));
 
+        // Pages
         $router->addRoute(new Route('/pages', 'AdminPageController@index'));
         $router->addRoute(new Route('/pages/save', 'AdminPageController@save'));
         $router->addRoute(new Route('/pages/edit', 'AdminPageController@edit'));
@@ -36,14 +41,22 @@ $router = new Router(
         $router->addRoute(new Route('/pages/rebuild', 'AdminPageController@rebuild'));
         $router->addRoute(new Route('/pages/preview', 'AdminPageController@preview'));
 
+        // Posts
         $router->addRoute(new Route('/posts', 'AdminPostController@index'));
         $router->addRoute(new Route('/posts/save', 'AdminPostController@save'));
         $router->addRoute(new Route('/posts/edit', 'AdminPostController@edit'));
         $router->addRoute(new Route('/posts/delete', 'AdminPostController@delete'));
         $router->addRoute(new Route('/posts/rebuild', 'AdminPostController@rebuild'));
         $router->addRoute(new Route('/posts/preview', 'AdminPostController@preview'));
-        
+
         $router->addRoute(new Route('/not-found', 'ErrorController@notFound'));
+    });
+
+    // Auth group
+    $router->group(['prefix' => 'auth'], function ($router) {
+        $router->addRoute(new Route('/login', 'AuthController@login'));
+        $router->addRoute(new Route('/logout', 'AuthController@logout'));
+        $router->addRoute(new Route('/register', 'AuthController@register'));
     });
     
 $router->execute($_SERVER['REQUEST_URI'], $container);
