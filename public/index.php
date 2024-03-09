@@ -5,6 +5,9 @@ use Ainab\Really\DI;
 use Ainab\Really\Router;
 use Ainab\Really\Route;
 
+// import dotenv
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
 
 $container = new DI\Container();
 $container->bind('ManageContentService', 'Ainab\Really\Service\ManageContentService');

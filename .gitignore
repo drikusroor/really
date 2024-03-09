@@ -10,3 +10,6 @@ db/**/*.md
 
 # db
 db/**/*.json
+
+# .env
+.env
