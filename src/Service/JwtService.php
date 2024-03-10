@@ -4,11 +4,14 @@ namespace Ainab\Really\Service;
 
 class JwtService {
     private $secretKey;
-    private $algorithm;
 
-    public function __construct($key, $algo = 'HS256') {
-        $this->secretKey = $key;
-        $this->algorithm = $algo;
+    public function __construct(private $algorithm = 'HS256') {
+
+        if (!isset($_ENV['JWT_SECRET'])) {
+            throw new \Exception('JWT_SECRET environment variable not set');
+        }
+
+        $this->secretKey = $_ENV['JWT_SECRET'];
     }
 
     // Base64Url encode
@@ -66,6 +69,15 @@ class JwtService {
         }
 
         return json_decode($payload, true);
+    }
+
+    public function validateToken() {
+        $token = $this->parseToken();
+        if (!$token) {
+            return false;
+        }
+
+        return $token['validUntil'] > time();
     }
 
     private function getAlgorithm() {

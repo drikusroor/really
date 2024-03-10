@@ -14,6 +14,15 @@ class AuthController extends BaseController
         parent::__construct();
     }
 
+    public function index()
+    {
+        if ($this->jwtService->validateToken()) {
+            header('Location: /');
+        }
+
+        echo $this->twig->render('pages/login.html.twig');
+    }
+
     public function login()
     {
         $formData = $_POST;
@@ -24,20 +33,22 @@ class AuthController extends BaseController
 
         if ($user && password_verify($password, $user->password)) {
 
+            $validUntil = time() + 3600;
+
             $payload = [
                 'id' => $user->id,
                 'email' => $user->email,
                 'firstName' => $user->firstName,
                 'lastName' => $user->lastName,
                 'isAdmin' => $user->isAdmin ?? false,
+                'validUntil' => $validUntil,
             ];
 
             $jwt = $this->jwtService->generateToken($payload);
-            echo $jwt;
             setcookie('jwt', $jwt, time() + 3600, '/', '', false, true);
-            header('Location: /admin');
-        } else {
             header('Location: /auth/login');
+        } else {
+            echo $this->twig->render('pages/login.html.twig', ['error' => 'Invalid email or password']);
         }
     }
 

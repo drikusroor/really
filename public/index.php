@@ -57,7 +57,8 @@ $router = new Router(
 
     // Auth group
     $router->group(['prefix' => 'auth'], function ($router) {
-        $router->addRoute(new Route('/login', 'AuthController@login'));
+        $router->addRoute(new Route('/login', 'AuthController@index', 'GET'));
+        $router->addRoute(new Route('/login', 'AuthController@login', 'POST'));
         $router->addRoute(new Route('/logout', 'AuthController@logout'));
         $router->addRoute(new Route('/register', 'AuthController@register'));
     });
