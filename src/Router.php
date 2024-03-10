@@ -53,8 +53,10 @@ class Router
      */
     public function execute($url, $container)
     {
+        $method = $_SERVER['REQUEST_METHOD'];
+
         foreach ($this->routes as $route) {
-            if ($route->matches($url)) {
+            if ($route->matches($url, $method)) {
                 return $route->execute($container);
             }
         }

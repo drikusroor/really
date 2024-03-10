@@ -10,14 +10,18 @@ class Route
     private $params;
     private $options;
 
-    public function __construct($path, $action)
+    public function __construct($path, $action, private $method = 'GET')
     {
         $this->path = trim($path, '/');
         $this->action = $action;
     }
 
-    public function matches($url)
+    public function matches($url, $method = 'GET')
     {
+        if ($this->method !== $method) {
+            return false;
+        }
+
         $url = trim($url, '/');
         $path = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $this->path);
         $regex = "#^$path$#i";
