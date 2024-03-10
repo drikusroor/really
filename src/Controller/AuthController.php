@@ -3,6 +3,7 @@
 namespace Ainab\Really\Controller;
 
 use Ainab\Really\Controller\BaseController;
+use Ainab\Really\Model\Request;
 use Ainab\Really\Service\UserService;
 use Ainab\Really\Service\JwtService;
 use Ainab\Really\Model\User;
@@ -16,7 +17,10 @@ class AuthController extends BaseController
 
     public function index()
     {
-        if ($this->jwtService->validateToken()) {
+        $request = new Request();
+        $jwt = $request->cookie('jwt');
+
+        if ($this->jwtService->validateToken($jwt)) {
             header('Location: /');
         }
 

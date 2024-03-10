@@ -2,6 +2,8 @@
 
 namespace Ainab\Really;
 
+use Ainab\Really\DI\Container;
+
 class Route
 {
     private $path;
@@ -9,6 +11,7 @@ class Route
     private $matches;
     private $params;
     private $options;
+    private $middlewares = [];
 
     public function __construct($path, $action, private $method = 'GET')
     {
@@ -53,7 +56,7 @@ class Route
         return '([^/]+)';
     }
 
-    public function execute($container)
+    public function execute(Container $container)
     {
         if (is_string($this->action)) {
             $params = explode('@', $this->action);
@@ -61,8 +64,6 @@ class Route
             $method = $params[1];
 
             try {
-                $container->make($controllerName);
-
                 $controller = $container->make($controllerName);
 
                 if (method_exists($controller, $method)) {
@@ -86,6 +87,16 @@ class Route
         $newPath = trim($prefix, '/') . '/' . $this->path;
 
         $this->path = trim($newPath, '/');
+    }
+
+    public function setMiddlewares($middlewares = [])
+    {
+        $this->middlewares = $middlewares;
+    }
+
+    public function getMiddlewares()
+    {
+        return $this->middlewares;
     }
 
     protected function handleNotFound($container, $message = null)

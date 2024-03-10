@@ -3,11 +3,13 @@
 namespace Ainab\Really;
 
 use Ainab\Really\Controller\ErrorController;
+use Ainab\Really\DI\Container;
 
 class Router
 {
     private $routes = [];
     private $currentGroupOptions = [];
+    private $middlewares = [];
 
 
     /**
@@ -32,6 +34,9 @@ class Router
         if (isset($this->currentGroupOptions['prefix'])) {
             $route->prependPath($this->currentGroupOptions['prefix']);
         }
+        if (isset($this->currentGroupOptions['middleware'])) {
+            $route->setMiddlewares($this->currentGroupOptions['middleware']);
+        }
 
         $this->routes[] = $route;
     }
@@ -46,17 +51,27 @@ class Router
         $this->currentGroupOptions = $previousOptions; // Revert to previous group options
     }
 
+    public function middleware($middleware)
+    {
+        $this->middlewares[] = $middleware;
+    }
     /**
      * Executes the route matching the given url.
      *
      * @param string $url The url to be matched.
      */
-    public function execute($url, $container)
+    public function execute($url, Container $container)
     {
+        $request = $container->make('Request');
         $method = $_SERVER['REQUEST_METHOD'];
 
         foreach ($this->routes as $route) {
             if ($route->matches($url, $method)) {
+                foreach ($route->getMiddlewares() as $middleware) {
+                    $middlewareInstance = $container->make($middleware);
+                    $request = $container->make('Request');
+                    $middlewareInstance->handle($request);
+                }
                 return $route->execute($container);
             }
         }

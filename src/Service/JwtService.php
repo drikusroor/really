@@ -46,12 +46,11 @@ class JwtService {
     }
 
     // Parse and validate a JWT token from cookies
-    public function parseToken() {
-        if (!isset($_COOKIE['jwt'])) {
-            return null; // No JWT cookie present
+    public function parseToken($jwt) {
+        if (!$jwt) {
+            return null;
         }
 
-        $jwt = $_COOKIE['jwt'];
         $tokenParts = explode('.', $jwt);
         $header = base64_decode($tokenParts[0]);
         $payload = base64_decode($tokenParts[1]);
@@ -71,13 +70,13 @@ class JwtService {
         return json_decode($payload, true);
     }
 
-    public function validateToken() {
-        $token = $this->parseToken();
-        if (!$token) {
+    public function validateToken($jwt) {
+        $parsed = $this->parseToken($jwt);
+        if (!$parsed) {
             return false;
         }
 
-        return $token['validUntil'] > time();
+        return $parsed['validUntil'] > time();
     }
 
     private function getAlgorithm() {
@@ -94,10 +93,5 @@ class JwtService {
         return $algos[$this->algorithm];
     }
 }
-
-// Usage example:
-// $jwtHandler = new SimpleJWT('your-secret-key');
-// $token = $jwtHandler->generateToken(['user_id' => 123]);
-// $parsedToken = $jwtHandler->parseToken();
 
 ?>
