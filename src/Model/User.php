@@ -18,8 +18,14 @@ class User
     public $updatedAt;
 
 
-    public function __construct($email, $password, $firstName = null, $lastName = null, $avatar = null, $isAdmin = false)
-    {
+    public function __construct(
+        $email,
+        $password,
+        $firstName = null,
+        $lastName = null,
+        $avatar = null,
+        $isAdmin = false
+    ) {
         $this->id = uniqid();
         $this->uuid = Uuid::uuid4()->toString();
         $this->email = $email;
@@ -51,7 +57,14 @@ class User
             $isAdmin = $data['isAdmin'];
         }
 
-        $user = new User($data['email'], $data['password'], $data['firstName'], $data['lastName'], $data['avatar'], $isAdmin);
+        $user = new User(
+            $data['email'],
+            $data['password'],
+            $data['firstName'],
+            $data['lastName'],
+            $data['avatar'],
+            $isAdmin
+        );
         $user->id = $data['id'];
         $user->uuid = $data['uuid'];
         $user->createdAt = $data['createdAt'];

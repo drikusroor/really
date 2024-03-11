@@ -42,7 +42,11 @@ class JwtService
         $base64UrlPayload = $this->base64UrlEncode($payload);
 
         $signature = hash_hmac(
-            $this->getAlgorithm(), $base64UrlHeader . "." . $base64UrlPayload, $this->secretKey, true);
+            $this->getAlgorithm(),
+            $base64UrlHeader . "." . $base64UrlPayload,
+            $this->secretKey,
+            true
+        );
         $base64UrlSignature = $this->base64UrlEncode($signature);
 
         $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
@@ -66,7 +70,11 @@ class JwtService
         $base64UrlHeader = $this->base64UrlEncode($header);
         $base64UrlPayload = $this->base64UrlEncode($payload);
         $signature = hash_hmac(
-            $this->getAlgorithm(), $base64UrlHeader . "." . $base64UrlPayload, $this->secretKey, true);
+            $this->getAlgorithm(),
+            $base64UrlHeader . "." . $base64UrlPayload,
+            $this->secretKey,
+            true
+        );
         $base64UrlSignature = $this->base64UrlEncode($signature);
 
         // Verify it matches the signature provided in the token
