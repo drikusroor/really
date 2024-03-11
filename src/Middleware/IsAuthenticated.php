@@ -20,16 +20,21 @@ class IsAuthenticated implements IMiddlewareBase {
         $token = $headerToken ?? $cookieToken;
 
         if (!$token) {
-            header('Location: /auth/login');
+            $this->loginWithRedirect($request);
         }
 
         $authenticated = $this->jwtService->validateToken($token);
 
         if (!$authenticated) {
-            header('Location: /auth/login');
+            $this->loginWithRedirect($request);
         }
 
         return $request;
+    }
+
+    private function loginWithRedirect(Request $request) {
+        $currentUrl = $request->url;
+        header('Location: /auth/login?redirect=' . $currentUrl);
     }
 }
 
