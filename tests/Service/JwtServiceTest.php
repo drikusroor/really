@@ -1,16 +1,21 @@
 <?php
 
-require_once 'src/Service/JwtService.php';
+namespace Ainab\Really\Service;
 
 use PHPUnit\Framework\TestCase;
 
 class JwtServiceTest extends TestCase
 {
     private $jwtHandler;
+    private $secretKey;
 
     protected function setUp(): void
     {
-        $this->jwtHandler = new SimpleJWT('your-secret-key');
+        // Set the JWT_SECRET environment variable
+        $this->secretKey = '1234567890';
+        $_ENV['JWT_SECRET'] = $this->secretKey;
+
+        $this->jwtHandler = new JwtService();
     }
 
     public function testGenerateToken()
@@ -31,7 +36,19 @@ class JwtServiceTest extends TestCase
         $this->assertStringContainsString($this->jwtHandler->base64UrlEncode(json_encode($payload)), $token);
 
         // Assert that the token contains the base64UrlSignature
-        $this->assertStringContainsString($this->jwtHandler->base64UrlEncode(hash_hmac('sha256', $this->jwtHandler->base64UrlEncode(json_encode(['typ' => 'JWT', 'alg' => 'HS256'])) . "." . $this->jwtHandler->base64UrlEncode(json_encode($payload)), 'your-secret-key', true)), $token);
+        $this->assertStringContainsString(
+            $this->jwtHandler->base64UrlEncode(
+                hash_hmac(
+                    'sha256',
+                    $this->jwtHandler->base64UrlEncode(
+                        json_encode(['typ' => 'JWT', 'alg' => 'HS256'])
+                    ) . "." . $this->jwtHandler->base64UrlEncode(json_encode($payload)),
+                    '1234567890',
+                    true
+                )
+            ),
+            $token
+        );
     }
 
     public function testParseToken()
@@ -44,7 +61,7 @@ class JwtServiceTest extends TestCase
         $_COOKIE['jwt'] = $token;
 
         // Call the parseToken method
-        $parsedToken = $this->jwtHandler->parseToken();
+        $parsedToken = $this->jwtHandler->parseToken($token);
 
         // Assert that the parsed token is not null
         $this->assertNotNull($parsedToken);
