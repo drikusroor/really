@@ -40,8 +40,7 @@ class JwtService {
         $base64UrlSignature = $this->base64UrlEncode($signature);
 
         $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
-        
-        setcookie('jwt', $jwt, time() + 3600, "/"); // 1-hour expiration, adjust as needed
+
         return $jwt;
     }
 

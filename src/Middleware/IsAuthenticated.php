@@ -12,7 +12,6 @@ class IsAuthenticated implements IMiddlewareBase {
 
     public function handle(Request $request) {
         $headerToken = $request->header('Authorization');
-
         if (!$headerToken) {
             $cookieToken = $request->cookie('jwt'); 
         }
@@ -33,7 +32,7 @@ class IsAuthenticated implements IMiddlewareBase {
     }
 
     private function loginWithRedirect(Request $request) {
-        $currentUrl = $request->url;
+        $currentUrl = $request->url();
         header('Location: /auth/login?redirect=' . $currentUrl);
     }
 }

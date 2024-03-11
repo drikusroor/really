@@ -32,6 +32,8 @@ class AuthController extends BaseController
         $formData = $_POST;
         $email = $formData['email'];
         $password = $formData['password'];
+        $request = new Request();
+        $redirect = $request->query('redirect');
         
         $user = $this->userService->getUserByEmail($email);
 
@@ -49,8 +51,13 @@ class AuthController extends BaseController
             ];
 
             $jwt = $this->jwtService->generateToken($payload);
-            setcookie('jwt', $jwt, time() + 3600, '/', '', false, true);
-            header('Location: /auth/login');
+            setcookie('jwt', $jwt, time() + 3600, '/', '', false, false);
+
+            if ($redirect) {
+                header('Location: ' . $redirect);
+            } else {
+                header('Location: /');
+            }
         } else {
             echo $this->twig->render('pages/login.html.twig', ['error' => 'Invalid email or password']);
         }
@@ -58,7 +65,7 @@ class AuthController extends BaseController
 
     public function logout()
     {
-        setcookie('jwt', '', time() - 3600, '/', '', false, true);
+        setcookie('jwt', '', time() - 3600, '/', '', false, false);
         header('Location: /');
     }
 
