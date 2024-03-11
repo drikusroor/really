@@ -2,10 +2,12 @@
 
 namespace Ainab\Really\Service;
 
-class JwtService {
+class JwtService
+{
     private $secretKey;
 
-    public function __construct(private $algorithm = 'HS256') {
+    public function __construct(private $algorithm = 'HS256')
+    {
 
         if (!isset($_ENV['JWT_SECRET'])) {
             throw new \Exception('JWT_SECRET environment variable not set');
@@ -15,17 +17,20 @@ class JwtService {
     }
 
     // Base64Url encode
-    public function base64UrlEncode($data) {
+    public function base64UrlEncode($data)
+    {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
     // Base64Url decode
-    public function base64UrlDecode($data) {
+    public function base64UrlDecode($data)
+    {
         return base64_decode(strtr($data, '-_', '+/') . str_repeat('=', 3 - (3 + strlen($data)) % 4));
     }
 
     // Generate a JWT token
-    public function generateToken($payload) {
+    public function generateToken($payload)
+    {
         if (isset($payload['password'])) {
             unset($payload['password']);
         }
@@ -36,7 +41,8 @@ class JwtService {
         $base64UrlHeader = $this->base64UrlEncode($header);
         $base64UrlPayload = $this->base64UrlEncode($payload);
 
-        $signature = hash_hmac($this->getAlgorithm(), $base64UrlHeader . "." . $base64UrlPayload, $this->secretKey, true);
+        $signature = hash_hmac(
+            $this->getAlgorithm(), $base64UrlHeader . "." . $base64UrlPayload, $this->secretKey, true);
         $base64UrlSignature = $this->base64UrlEncode($signature);
 
         $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
@@ -45,7 +51,8 @@ class JwtService {
     }
 
     // Parse and validate a JWT token from cookies
-    public function parseToken($jwt) {
+    public function parseToken($jwt)
+    {
         if (!$jwt) {
             return null;
         }
@@ -58,7 +65,8 @@ class JwtService {
         // Build a signature based on the header and payload using the secret
         $base64UrlHeader = $this->base64UrlEncode($header);
         $base64UrlPayload = $this->base64UrlEncode($payload);
-        $signature = hash_hmac($this->getAlgorithm(), $base64UrlHeader . "." . $base64UrlPayload, $this->secretKey, true);
+        $signature = hash_hmac(
+            $this->getAlgorithm(), $base64UrlHeader . "." . $base64UrlPayload, $this->secretKey, true);
         $base64UrlSignature = $this->base64UrlEncode($signature);
 
         // Verify it matches the signature provided in the token
@@ -69,7 +77,8 @@ class JwtService {
         return json_decode($payload, true);
     }
 
-    public function validateToken($jwt) {
+    public function validateToken($jwt)
+    {
         $parsed = $this->parseToken($jwt);
         if (!$parsed) {
             return false;
@@ -78,7 +87,8 @@ class JwtService {
         return $parsed['validUntil'] > time();
     }
 
-    private function getAlgorithm() {
+    private function getAlgorithm()
+    {
         $algos = [
             'HS256' => 'sha256',
             'HS384' => 'sha384',
@@ -92,5 +102,3 @@ class JwtService {
         return $algos[$this->algorithm];
     }
 }
-
-?>

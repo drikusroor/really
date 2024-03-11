@@ -34,11 +34,10 @@ class AuthController extends BaseController
         $password = $formData['password'];
         $request = new Request();
         $redirect = $request->query('redirect');
-        
+
         $user = $this->userService->getUserByEmail($email);
 
         if ($user && password_verify($password, $user->password)) {
-
             $validUntil = time() + 3600;
 
             $payload = [

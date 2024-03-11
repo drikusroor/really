@@ -1,19 +1,22 @@
 <?php
 
 namespace Ainab\Really\Middleware;
+
 use Ainab\Really\Service\JwtService;
 use Ainab\Really\Middleware\IMiddlewareBase;
 use Ainab\Really\Model\Request;
 
-class IsAuthenticated implements IMiddlewareBase {
-
-    public function __construct(private JwtService $jwtService) {
+class IsAuthenticated implements IMiddlewareBase
+{
+    public function __construct(private JwtService $jwtService)
+    {
     }
 
-    public function handle(Request $request) {
+    public function handle(Request $request)
+    {
         $headerToken = $request->header('Authorization');
         if (!$headerToken) {
-            $cookieToken = $request->cookie('jwt'); 
+            $cookieToken = $request->cookie('jwt');
         }
 
         $token = $headerToken ?? $cookieToken;
@@ -31,9 +34,9 @@ class IsAuthenticated implements IMiddlewareBase {
         return $request;
     }
 
-    private function loginWithRedirect(Request $request) {
+    private function loginWithRedirect(Request $request)
+    {
         $currentUrl = $request->url();
         header('Location: /auth/login?redirect=' . $currentUrl);
     }
 }
-

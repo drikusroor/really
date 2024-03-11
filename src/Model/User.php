@@ -1,9 +1,11 @@
 <?php
 
 namespace Ainab\Really\Model;
+
 use Ramsey\Uuid\Uuid;
 
-class User {
+class User
+{
     public $id;
     public $uuid;
     public $email;
@@ -16,7 +18,8 @@ class User {
     public $updatedAt;
 
 
-    public function __construct($email, $password, $firstName = null, $lastName = null, $avatar = null, $isAdmin = false) {
+    public function __construct($email, $password, $firstName = null, $lastName = null, $avatar = null, $isAdmin = false)
+    {
         $this->id = uniqid();
         $this->uuid = Uuid::uuid4()->toString();
         $this->email = $email;
@@ -29,7 +32,8 @@ class User {
         $this->updatedAt = $this->createdAt;
     }
 
-    public static function fromArray($data = []) {
+    public static function fromArray($data = [])
+    {
 
         // throw error if email is not set
         if (!isset($data['email'])) {
