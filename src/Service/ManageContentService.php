@@ -159,7 +159,7 @@ class ManageContentService
 
     private function generateIndex()
     {
-        $pages = $this->getContentList();
+        $contentItems = $this->getContentList();
         $frontmatter = new Frontmatter(
             ContentType::PAGE->value,
             'Pages',
@@ -172,6 +172,9 @@ class ManageContentService
             null,
             'This is an index of all pages.'
         );
+        $pages = array_filter($contentItems, function ($item) {
+            return $item->getFrontmatter()->getContentType() === ContentType::PAGE->value;
+        });
         $html = $this->convertHomepageToHtml($frontmatter, $pages);
         $this->safeWriteHtmlFile('index', $html);
     }
