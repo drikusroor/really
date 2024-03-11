@@ -1,0 +1,31 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block content %}
+	<h1 class="text-3xl font-bold">Register</h1>
+
+	<div class="mt-5">
+		{% if error is defined and error is not empty %}
+			<div class="text-white bg-red-500 rounded p-2 mb-3">
+				{{ error }}
+			</div>
+		{% endif %}
+		{% if success is defined and success is not empty %}
+			<div class="text-white bg-green-500 rounded p-2 mb-3">
+				{{ success }}
+			</div>
+		{% endif %}
+		<form method="post" action="/auth/register">
+			<div class="mb-4">
+				<label for="email" class="block text-sm font-bold mb-2">Email:</label>
+				<input type="email" required id="email" name="email" placeholder="Please enter your email address" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+			</div>
+			<div class="mb-6">
+				<label for="password" class="block text-sm font-bold mb-2">Password:</label>
+				<input type="password" required id="password" name="password" placeholder="Please enter your password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+			</div>
+			<div>
+				<input type="submit" value="Register" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+			</div>
+		</form>
+	</div>
+{% endblock %}

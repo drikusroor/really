@@ -70,18 +70,39 @@ class AuthController extends BaseController
 
     public function register()
     {
-        $formData = $_POST;
-        $email = $formData['email'];
-        $password = $formData['password'];
+        echo $this->twig->render('pages/register.html.twig');
+    }
+
+    public function createUser()
+    {
+        $request = new Request();
+
+        $email = $request->body('email');
+        $password = $request->body('password');
 
         $user = $this->userService->getUserByEmail($email);
 
         if ($user) {
-            header('Location: /auth/register');
+            echo $this->twig->render('pages/register.html.twig', ['error' => 'Could not create user']);
         } else {
             $user = new User($email, password_hash($password, PASSWORD_DEFAULT));
             $this->userService->createUser($user);
-            header('Location: /auth/login');
+
+            $validUntil = time() + 3600;
+
+            $payload = [
+                'id' => $user->id,
+                'email' => $user->email,
+                'firstName' => $user->firstName,
+                'lastName' => $user->lastName,
+                'isAdmin' => $user->isAdmin ?? false,
+                'validUntil' => $validUntil,
+            ];
+
+            $jwt = $this->jwtService->generateToken($payload);
+            setcookie('jwt', $jwt, time() + 3600, '/', '', false, false);
+
+            echo $this->twig->render('pages/register.html.twig', ['success' => 'User created successfully']);
         }
     }
 }

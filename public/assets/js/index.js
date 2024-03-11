@@ -30,11 +30,19 @@ function parseJwt($token) {
 
 function checkAuth() {
   const token = getCookie('jwt');
+
+  if (!token) {
+    onLoggedOut();
+  }
+
   if (token) {
     const payload = parseJwt(token);
     if (payload.validUntil > Date.now() / 1000) {
       onAuthenticated();
+    } else {
+      onLoggedOut();
     }
+    
     if (payload.isAdmin) {
       onAdminAuthenticated();
     }
@@ -52,6 +60,13 @@ function onAuthenticated() {
 function onAdminAuthenticated() {
   const onAuthElements = document.querySelectorAll('[data-on-admin-auth]');
 
+  onAuthElements.forEach((element) => {
+    element.classList.remove('hidden');
+  });
+}
+
+function onLoggedOut() {
+  const onAuthElements = document.querySelectorAll('[data-on-logged-out]');
   onAuthElements.forEach((element) => {
     element.classList.remove('hidden');
   });
