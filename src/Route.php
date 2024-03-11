@@ -2,6 +2,8 @@
 
 namespace Ainab\Really;
 
+use Ainab\Really\DI\Container;
+
 class Route
 {
     private $path;
@@ -9,15 +11,20 @@ class Route
     private $matches;
     private $params;
     private $options;
+    private $middlewares = [];
 
-    public function __construct($path, $action)
+    public function __construct($path, $action, private $method = 'GET')
     {
         $this->path = trim($path, '/');
         $this->action = $action;
     }
 
-    public function matches($url)
+    public function matches($url, $method = 'GET')
     {
+        if ($this->method !== $method) {
+            return false;
+        }
+
         $url = trim($url, '/');
         $path = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $this->path);
         $regex = "#^$path$#i";
@@ -49,7 +56,7 @@ class Route
         return '([^/]+)';
     }
 
-    public function execute($container)
+    public function execute(Container $container)
     {
         if (is_string($this->action)) {
             $params = explode('@', $this->action);
@@ -57,8 +64,6 @@ class Route
             $method = $params[1];
 
             try {
-                $container->make($controllerName);
-
                 $controller = $container->make($controllerName);
 
                 if (method_exists($controller, $method)) {
@@ -82,6 +87,16 @@ class Route
         $newPath = trim($prefix, '/') . '/' . $this->path;
 
         $this->path = trim($newPath, '/');
+    }
+
+    public function setMiddlewares($middlewares = [])
+    {
+        $this->middlewares = $middlewares;
+    }
+
+    public function getMiddlewares()
+    {
+        return $this->middlewares;
     }
 
     protected function handleNotFound($container, $message = null)

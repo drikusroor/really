@@ -4,3 +4,12 @@ vendor
 
 public/**/*.html
 db/**/*.md
+
+# ignore php unit result cache
+.phpunit.result.cache
+
+# db
+db/**/*.json
+
+# .env
+.env
